@@ -1,0 +1,1430 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Odak Koçu</title>
+<meta name="description" content="Bilimsel çalışma yöntemlerini öğren ve uygula: pomodoro, kendini test etme, aralıklı tekrar kartları, hata defteri.">
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f4ee; --surface:#ffffff; --surface-2:#f0ebe2; --text:#1f2328; --muted:#6a6f76; --border:#e6dfd3;
+  --primary:#0f766e; --primary-ink:#ffffff; --primary-soft:#d8efeb;
+  --accent:#b45309; --accent-soft:#fdf0d9;
+  --danger:#c2410c; --danger-soft:#fde5d9;
+  --ok:#15803d; --ok-soft:#dcf2e3;
+  --shadow:0 1px 2px rgba(31,35,40,.04),0 6px 18px rgba(31,35,40,.05);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121518; --surface:#1b1f23; --surface-2:#252a30; --text:#e9e7e3; --muted:#9ca2a9; --border:#2d3339;
+    --primary:#2dd4bf; --primary-ink:#06302b; --primary-soft:#13332f;
+    --accent:#fbbf24; --accent-soft:#3a2c10;
+    --danger:#fb923c; --danger-soft:#3b2114;
+    --ok:#4ade80; --ok-soft:#15311e;
+    --shadow:none; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121518; --surface:#1b1f23; --surface-2:#252a30; --text:#e9e7e3; --muted:#9ca2a9; --border:#2d3339;
+  --primary:#2dd4bf; --primary-ink:#06302b; --primary-soft:#13332f;
+  --accent:#fbbf24; --accent-soft:#3a2c10;
+  --danger:#fb923c; --danger-soft:#3b2114;
+  --ok:#4ade80; --ok-soft:#15311e;
+  --shadow:none; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:'Nunito',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;font-size:16px;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+button{font:inherit;color:inherit}
+h1,h2,h3{margin:0;line-height:1.25}
+h1{font-size:26px;font-weight:900;letter-spacing:-.01em}
+h2{font-size:19px;font-weight:800}
+h3{font-size:16px;font-weight:800}
+p{margin:8px 0}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.xs{font-size:12.5px}
+.center{text-align:center}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row.between{justify-content:space-between}
+.grow{flex:1;min-width:0}
+.mt{margin-top:14px}
+.hidden{display:none!important}
+
+.topbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid transparent}
+.topbar .in{max-width:720px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px}
+.brand img{width:30px;height:30px;border-radius:8px}
+.streak{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:var(--accent);font-weight:800;border-radius:999px;padding:6px 12px;font-size:14px}
+
+.app{max-width:720px;margin:0 auto;padding:4px 16px calc(100px + env(safe-area-inset-bottom))}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+.card.soft{background:var(--primary-soft);border-color:transparent;box-shadow:none}
+.card.warm{background:var(--accent-soft);border-color:transparent;box-shadow:none}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.eyebrow{font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+.btn{appearance:none;border:0;border-radius:14px;padding:12px 16px;font-weight:800;cursor:pointer;background:var(--surface-2);color:var(--text);display:inline-flex;align-items:center;gap:8px;justify-content:center;min-height:46px;text-decoration:none;transition:transform .08s ease, filter .15s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--primary);color:var(--primary-ink)}
+.btn.ghost{background:transparent;border:1.5px solid var(--border)}
+.btn.danger{background:var(--danger-soft);color:var(--danger)}
+.btn.ok{background:var(--ok-soft);color:var(--ok)}
+.btn.warn{background:var(--accent-soft);color:var(--accent)}
+.btn.block{width:100%}
+.btn.sm{min-height:36px;padding:7px 12px;border-radius:11px;font-size:14px}
+.btn.lg{min-height:56px;font-size:18px;padding:14px 24px;border-radius:18px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn svg{width:20px;height:20px}
+.linkbtn{background:none;border:0;color:var(--primary);font-weight:800;cursor:pointer;padding:4px 0}
+
+input,select,textarea{font:inherit;width:100%;padding:12px 14px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--primary)}
+textarea{min-height:110px;resize:vertical;line-height:1.5}
+textarea.big{min-height:220px}
+label.f{display:block;font-weight:800;font-size:14px;margin:14px 0 6px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips.scroll{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -18px;padding:2px 18px}
+.chips.scroll::-webkit-scrollbar{display:none}
+.chip{border:1.5px solid var(--border);background:var(--surface);border-radius:999px;padding:7px 14px;font-weight:800;font-size:14px;cursor:pointer;white-space:nowrap;color:var(--text)}
+.chip.on{background:var(--primary);border-color:var(--primary);color:var(--primary-ink)}
+.tag{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:800;background:var(--surface-2);color:var(--muted)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.warn{background:var(--accent-soft);color:var(--accent)}
+.tag.danger{background:var(--danger-soft);color:var(--danger)}
+.tag.pri{background:var(--primary-soft);color:var(--primary)}
+
+/* Tabs */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--border);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+nav.tabs .in{max-width:720px;margin:0 auto;display:flex}
+nav.tabs button{flex:1;min-width:0;background:none;border:0;color:var(--muted);font-size:11.5px;font-weight:800;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:12px;cursor:pointer;position:relative}
+nav.tabs button svg{width:24px;height:24px}
+nav.tabs button.on{color:var(--primary)}
+nav.tabs button.on .ic{background:var(--primary-soft)}
+nav.tabs .ic{display:grid;place-items:center;width:48px;height:30px;border-radius:999px}
+nav.tabs .badge{position:absolute;top:2px;left:calc(50% + 8px);background:var(--danger);color:#fff;font-size:10.5px;min-width:18px;height:18px;border-radius:9px;display:grid;place-items:center;padding:0 5px}
+
+/* Today */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{border:0;text-align:left;background:var(--surface-2);border-radius:16px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.tile b{font-size:26px;font-weight:900;line-height:1.1}
+.tile span{font-size:13.5px;color:var(--muted);font-weight:700}
+.tile.hot{background:var(--accent-soft)}
+.tile.hot b{color:var(--accent)}
+.habit{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:16px;cursor:pointer;border:1.5px solid var(--border);margin:8px 0;background:var(--surface);width:100%;text-align:left}
+.habit .box{width:28px;height:28px;border-radius:9px;border:2px solid var(--border);display:grid;place-items:center;flex:none;color:transparent}
+.habit .box svg{width:18px;height:18px}
+.habit.done{background:var(--ok-soft);border-color:transparent}
+.habit.done .box{background:var(--ok);border-color:var(--ok);color:#fff}
+.habit .t{font-weight:800}
+.habit .s{font-size:13px;color:var(--muted)}
+.prog{height:10px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.prog > i{display:block;height:100%;background:var(--primary);border-radius:99px;transition:width .3s}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+.week .d{font-size:12px;font-weight:800;color:var(--muted)}
+.week .dot{margin:4px auto 0;width:34px;height:34px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-size:13px;font-weight:900;color:var(--muted)}
+.week .dot.on{background:var(--primary);color:var(--primary-ink)}
+.week .dot.today{outline:2px solid var(--primary);outline-offset:2px}
+.bars .b{display:grid;grid-template-columns:96px 1fr 44px;gap:10px;align-items:center;margin:6px 0;font-size:14px;font-weight:700}
+.bars .b .tr{height:10px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.bars .b .tr i{display:block;height:100%;background:var(--primary);border-radius:99px}
+.bars .b .v{text-align:right;color:var(--muted)}
+
+/* Timer */
+.modes{display:flex;justify-content:center;gap:6px;margin:14px 0 6px}
+.modes span{font-size:13px;font-weight:800;padding:5px 12px;border-radius:999px;color:var(--muted)}
+.modes span.on{background:var(--primary-soft);color:var(--primary)}
+.modes span.on.brk{background:var(--accent-soft);color:var(--accent)}
+.ring{position:relative;width:min(270px,72vw);aspect-ratio:1;margin:8px auto 4px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .bgc{stroke:var(--surface-2)}
+.ring .fgc{stroke:var(--primary);transition:stroke-dashoffset .3s linear}
+.ring.brk .fgc{stroke:var(--accent)}
+.ring .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .time{font-size:clamp(46px,15vw,64px);font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.ring .sub{font-weight:800;color:var(--muted);font-size:14px}
+.rounds{display:flex;gap:6px;justify-content:center;margin-top:4px}
+.rounds i{width:9px;height:9px;border-radius:50%;background:var(--surface-2)}
+.rounds i.on{background:var(--primary)}
+.goal{background:var(--surface-2);border-radius:14px;padding:10px 14px;font-weight:700;margin:10px 0}
+.note{background:var(--accent-soft);border-radius:16px;padding:14px;margin-top:14px;font-weight:600}
+.settings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+
+/* Lists */
+.item{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--border)}
+.item:first-child{border-top:0}
+.item .tt{font-weight:800;overflow:hidden;text-overflow:ellipsis}
+.item .meta{font-size:13px;color:var(--muted);font-weight:600}
+.dots4{display:flex;gap:4px}
+.dots4 i{width:9px;height:9px;border-radius:50%;background:var(--surface-2)}
+.dots4 i.on{background:var(--ok)}
+.thumb{width:56px;height:56px;border-radius:12px;object-fit:cover;background:var(--surface-2);flex:none}
+.thumb.ph{display:grid;place-items:center;color:var(--muted);font-size:22px}
+.empty{text-align:center;color:var(--muted);padding:18px 8px;font-weight:600}
+
+/* Steps */
+.steps{display:flex;gap:6px;margin-bottom:14px}
+.steps i{flex:1;height:6px;border-radius:99px;background:var(--surface-2)}
+.steps i.on{background:var(--primary)}
+.readbox{background:var(--surface-2);border-radius:14px;padding:12px 14px;white-space:pre-wrap;max-height:220px;overflow:auto;font-size:15px}
+.timer-pill{display:inline-flex;gap:6px;align-items:center;font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}
+
+/* Flashcards */
+.flash{min-height:200px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;font-size:21px;font-weight:800;padding:24px 18px;border-radius:20px;background:var(--surface-2);white-space:pre-wrap;word-break:break-word}
+.flash.back{background:var(--primary-soft);margin-top:10px;font-size:19px}
+.flash .lbl{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.ans3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.ans3 .btn{flex-direction:column;gap:0;font-size:15px;padding:10px 6px}
+.ans3 .btn small{font-weight:600;font-size:11.5px;opacity:.85}
+.boxes{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:end;height:110px}
+.boxes .bx{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.boxes .bx i{display:block;width:100%;background:var(--primary);border-radius:8px 8px 4px 4px;min-height:4px;opacity:.85}
+.boxes .bx b{font-size:12px}
+.boxes .bx span{font-size:11px;color:var(--muted);font-weight:700}
+
+/* Guide */
+details.acc{border:1.5px solid var(--border);border-radius:16px;margin:10px 0;background:var(--surface);overflow:hidden}
+details.acc summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;align-items:center;gap:12px;font-weight:800}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary .em{font-size:24px;width:32px;text-align:center}
+details.acc summary .chev{margin-left:auto;transition:transform .2s;color:var(--muted)}
+details.acc[open] summary .chev{transform:rotate(180deg)}
+details.acc .body{padding:0 16px 16px}
+.kv{margin:10px 0}
+.kv b{display:block;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--primary);margin-bottom:2px}
+.src{font-size:13px;color:var(--muted);border-left:3px solid var(--border);padding-left:10px;margin-top:10px}
+ul.clean{padding-left:20px;margin:8px 0}
+ul.clean li{margin:4px 0}
+.plan{width:100%;border-collapse:collapse;font-size:14.5px}
+.plan td{padding:8px 6px;border-top:1px solid var(--border);vertical-align:top}
+.plan td:first-child{font-weight:800;white-space:nowrap;color:var(--primary);width:1%}
+.opt{display:block;width:100%;text-align:left;border:1.5px solid var(--border);background:var(--surface);border-radius:14px;padding:12px 14px;margin:8px 0;cursor:pointer;font-weight:700}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--danger);background:var(--danger-soft)}
+.opt:disabled{cursor:default}
+.prompt{background:var(--surface-2);border-radius:14px;padding:12px 14px;margin:10px 0}
+.prompt p{margin:0 0 8px;font-size:14.5px;white-space:pre-wrap}
+
+/* Modal + toast */
+.modal{position:fixed;inset:0;background:rgba(10,12,14,.5);display:none;align-items:flex-end;justify-content:center;z-index:60}
+.modal.open{display:flex}
+.sheet{background:var(--surface);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:24px 24px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));animation:up .2s ease}
+@keyframes up{from{transform:translateY(30px);opacity:.5}to{transform:none;opacity:1}}
+@media (min-width:640px){.modal{align-items:center;padding:16px}.sheet{border-radius:24px}}
+.sheet .x{float:right;background:var(--surface-2);border:0;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px}
+.check{display:flex;gap:12px;align-items:center;padding:10px 0;font-weight:700;cursor:pointer}
+.check input{width:22px;height:22px;flex:none;accent-color:var(--primary)}
+.toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:800;opacity:0;pointer-events:none;transition:.25s;z-index:70;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.imgfull{width:100%;border-radius:14px;margin:8px 0;background:var(--surface-2)}
+@media (max-width:380px){.bars .b{grid-template-columns:78px 1fr 36px}.ans3 .btn{font-size:14px}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="in">
+  <div class="brand"><img src="icon.svg" alt="">Odak Koçu</div>
+  <div id="streak" class="streak" title="Ardışık çalışma günü"></div>
+</div></div>
+<main class="app" id="view"></main>
+<nav class="tabs"><div class="in" id="tabs"></div></nav>
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+/* ---------- yardımcılar ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const pad = n => String(n).padStart(2, '0');
+const dkey = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const today = () => dkey();
+const parseK = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d, 12); };
+const addDays = (k, n) => { const d = parseK(k); d.setDate(d.getDate() + n); return dkey(d); };
+const diffDays = (a, b) => Math.round((parseK(b) - parseK(a)) / 864e5);
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const mmss = s => `${pad(Math.floor(s / 60))}:${pad(s % 60)}`;
+
+const DERSLER = ['Matematik','Fizik','Kimya','Biyoloji','Edebiyat','Tarih','Coğrafya','Felsefe','İngilizce','Din Kültürü','Diğer'];
+const AYLAR = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const GUN_UZUN = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+const GUN_KISA = ['Pz','Pt','Sa','Ça','Pe','Cu','Ct'];
+
+function fmtDate(k) {
+  const d = diffDays(today(), k);
+  if (d === 0) return 'bugün';
+  if (d === 1) return 'yarın';
+  if (d === -1) return 'dün';
+  if (d < 0) return `${-d} gün önce`;
+  if (d < 7) return `${d} gün sonra`;
+  const x = parseK(k); return `${x.getDate()} ${AYLAR[x.getMonth()]}`;
+}
+
+const I = (() => {
+  const s = (p, w = 2) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  return {
+    home: s('<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/>'),
+    timer: s('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9 2h6"/>'),
+    pen: s('<path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/>'),
+    cards: s('<rect x="3" y="7" width="13" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/>'),
+    mistake: s('<path d="M6 3h9l4 4v14H6z"/><path d="M10 11l5 5M15 11l-5 5"/>'),
+    book: s('<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/><path d="M8 7h8"/>'),
+    check: s('<path d="M5 12.5l4.5 4.5L19 7.5"/>', 3),
+    play: s('<path d="M7 4l13 8-13 8z"/>'),
+    pause: s('<path d="M8 4v16M16 4v16"/>', 3),
+    reset: s('<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>'),
+    skip: s('<path d="M5 4l10 8-10 8z"/><path d="M19 5v14"/>'),
+    plus: s('<path d="M12 5v14M5 12h14"/>', 2.5),
+    chev: s('<path d="M6 9l6 6 6-6"/>'),
+    fire: s('<path d="M12 22c4 0 7-3 7-7 0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-3 2-5 5-5 8 0 4 3 7 7 7z"/>'),
+    camera: s('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),
+  };
+})();
+
+/* ---------- veri ---------- */
+const KEY = 'odakKocu.v1';
+const DEFAULT = () => ({
+  v: 1, startDate: today(), lastTab: 'bugun', seenIntro: false, quizBest: null,
+  habits: { enabled: ['telefon', 'bosKagit'], level: 1, levelDate: today(), log: {} },
+  pomo: { work: 25, short: 5, long: 20, lastDers: 'Matematik', log: {}, run: null },
+  topics: [], cards: [], mistakes: [],
+});
+function merge(def, o) {
+  for (const k in o) {
+    if (def[k] && typeof def[k] === 'object' && !Array.isArray(def[k]) && o[k] && typeof o[k] === 'object' && !Array.isArray(o[k])) def[k] = merge(def[k], o[k]);
+    else def[k] = o[k];
+  }
+  return def;
+}
+function load() {
+  try { const raw = localStorage.getItem(KEY); if (raw) return merge(DEFAULT(), JSON.parse(raw)); } catch (e) {}
+  return DEFAULT();
+}
+let S = load();
+let saveWarned = false;
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); }
+  catch (e) { if (!saveWarned) { saveWarned = true; toast('Veriler kaydedilemiyor (tarayıcı depolaması kapalı ya da dolu).'); } }
+}
+
+/* fotoğraflar IndexedDB'de */
+const IDB = {
+  db: null,
+  async open() {
+    if (this.db) return this.db;
+    this.db = await new Promise((res, rej) => {
+      const r = indexedDB.open('odakKocu', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('img');
+      r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+    });
+    return this.db;
+  },
+  async tx(mode, fn) {
+    const db = await this.open();
+    return new Promise((res, rej) => {
+      const t = db.transaction('img', mode); const r = fn(t.objectStore('img'));
+      t.oncomplete = () => res(r && r.result); t.onerror = () => rej(t.error);
+    });
+  },
+  put(k, v) { return this.tx('readwrite', s => s.put(v, k)); },
+  get(k) { return this.tx('readonly', s => s.get(k)); },
+  del(k) { return this.tx('readwrite', s => s.delete(k)); },
+  clear() { return this.tx('readwrite', s => s.clear()); },
+};
+const imgURL = {};
+async function getImgURL(id) {
+  if (imgURL[id]) return imgURL[id];
+  try { const b = await IDB.get(id); if (b) return (imgURL[id] = URL.createObjectURL(b)); } catch (e) {}
+  return null;
+}
+async function hydrateImages(root = document) {
+  for (const el of $$('img[data-img]', root)) {
+    const u = await getImgURL(el.dataset.img);
+    if (u) el.src = u; else el.classList.add('hidden');
+  }
+}
+async function compressImage(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = url; });
+    const max = 1280, sc = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement('canvas');
+    c.width = Math.round(img.naturalWidth * sc); c.height = Math.round(img.naturalHeight * sc);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    return await new Promise(r => c.toBlob(r, 'image/jpeg', 0.72));
+  } finally { URL.revokeObjectURL(url); }
+}
+
+/* ---------- alışkanlıklar ---------- */
+const HABITS = [
+  { id: 'telefon',  ad: 'Telefon başka odadaydı', alt: 'Masada ters dursa bile dikkati azaltıyor.', lvl: 1 },
+  { id: 'bosKagit', ad: 'Kitabı kapatıp hatırladıklarımı yazdım', alt: '“Hatırla” sekmesinde yapınca kendiliğinden işaretlenir.', lvl: 1 },
+  { id: 'pomodoro', ad: 'En az 2 pomodoro yaptım', alt: '“Odak” sekmesinde 2. pomodoroda kendiliğinden işaretlenir.', lvl: 2 },
+  { id: 'hata',     ad: 'Hata defterime yazdım ya da baktım', alt: '“Hatalar” sekmesi', lvl: 2 },
+  { id: 'kartlar',  ad: 'Bugünkü kart tekrarlarımı bitirdim', alt: '“Kartlar” sekmesi', lvl: 3 },
+  { id: 'karisik',  ad: 'Karışık konulardan soru çözdüm', alt: 'Aynı tip 20 soru değil, farklı konulardan karışık.', lvl: 3 },
+  { id: 'anlat',    ad: 'Bir konuyu sesli anlattım', alt: 'Takıldığın yer, henüz anlamadığın yer.', lvl: 4 },
+  { id: 'uyku',     ad: 'Dün gece 8+ saat uyudum', alt: 'Öğrendiklerin uykuda kalıcı hale geliyor.', lvl: 4 },
+  { id: 'hareket',  ad: '20+ dakika yürüdüm ya da spor yaptım', alt: 'Hareket, odaklanmayı ve hafızayı destekler.', lvl: 4 },
+];
+const H = id => HABITS.find(h => h.id === id);
+function markHabit(id, on = true) {
+  const t = today(); const arr = S.habits.log[t] || (S.habits.log[t] = []);
+  const has = arr.includes(id);
+  if (on && !has) arr.push(id);
+  if (!on && has) arr.splice(arr.indexOf(id), 1);
+  save(); renderStreak();
+}
+const pomoCount = k => Object.values(S.pomo.log[k] || {}).reduce((a, b) => a + b, 0);
+const activeDay = k => (S.habits.log[k] || []).length > 0 || pomoCount(k) > 0;
+function streak() {
+  let d = today(), n = 0;
+  if (!activeDay(d)) d = addDays(d, -1);
+  while (activeDay(d)) { n++; d = addDays(d, -1); }
+  return n;
+}
+function fullDaysSinceLevel() {
+  let n = 0;
+  for (const [k, arr] of Object.entries(S.habits.log)) {
+    if (k >= S.habits.levelDate && S.habits.enabled.every(id => arr.includes(id))) n++;
+  }
+  return n;
+}
+function nextLevelHabits() { return HABITS.filter(h => h.lvl === S.habits.level + 1 && !S.habits.enabled.includes(h.id)); }
+
+/* ---------- arayüz çekirdeği ---------- */
+const VIEWS = {
+  bugun:   { t: 'Bugün',   i: 'home',    r: () => renderBugun() },
+  odak:    { t: 'Odak',    i: 'timer',   r: () => renderOdak() },
+  hatirla: { t: 'Hatırla', i: 'pen',     r: () => renderHatirla() },
+  kartlar: { t: 'Kartlar', i: 'cards',   r: () => renderKartlar() },
+  hatalar: { t: 'Hatalar', i: 'mistake', r: () => renderHatalar() },
+  rehber:  { t: 'Rehber',  i: 'book',    r: () => renderRehber() },
+};
+let current = VIEWS[S.lastTab] ? S.lastTab : 'bugun';
+
+function render() {
+  $('#view').innerHTML = VIEWS[current].r();
+  renderNav(); renderStreak();
+  if (current === 'odak') updateT();
+  hydrateImages($('#view'));
+}
+function go(v) {
+  if (!VIEWS[v]) return;
+  current = v; S.lastTab = v; save(); render(); window.scrollTo(0, 0);
+}
+function renderNav() {
+  const t = today();
+  const badges = {
+    hatirla: S.topics.filter(x => x.due && x.due <= t).length,
+    kartlar: S.cards.filter(c => c.due <= t).length,
+  };
+  $('#tabs').innerHTML = Object.entries(VIEWS).map(([k, v]) =>
+    `<button class="${k === current ? 'on' : ''}" data-act="go" data-v="${k}" aria-label="${v.t}">
+      <span class="ic">${I[v.i]}</span>${v.t}${badges[k] ? `<span class="badge">${badges[k] > 99 ? '99+' : badges[k]}</span>` : ''}
+    </button>`).join('');
+}
+function renderStreak() {
+  const n = streak();
+  $('#streak').innerHTML = `🔥 ${n} gün`;
+}
+function toast(msg) {
+  const el = $('#toast'); el.textContent = msg; el.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove('show'), 2600);
+}
+function openModal(html) { $('#sheet').innerHTML = `<button class="x" data-act="closeModal" aria-label="Kapat">✕</button>` + html; $('#modal').classList.add('open'); hydrateImages($('#sheet')); }
+function closeModal() { $('#modal').classList.remove('open'); $('#sheet').innerHTML = ''; }
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+
+const dersOptions = sel => DERSLER.map(d => `<option ${d === sel ? 'selected' : ''}>${d}</option>`).join('');
+
+/* ============ BUGÜN ============ */
+const TIPS = [
+  'Okumak “öğrendim” hissi verir; kitabı kapatıp hatırlamaya çalışmak gerçekten öğretir.',
+  'Telefon masada ters dursa bile dikkatini bir kısmını çalar. Başka odaya koy.',
+  'Zorlanıyorsan doğru yoldasın. Hatırlamaya uğraşmak, beynin o bilgiyi güçlendirmesidir.',
+  'Sınavdan önceki gece 4 saat yerine 4 gün boyunca 1’er saat çalış. Çok daha kalıcı.',
+  'Takıldığın soruyu hemen çözümden okuma: önce 2 dakika uğraş, sonra bak.',
+  '“Ders çalışacağım” yerine: “17:00’de masamda 2 pomodoro matematik.” Somut plan işe yarar.',
+  'Molada telefona bakmak beyni dinlendirmez. Kalk, yürü, su iç, pencereden dışarı bak.',
+  'Bir konuyu birine anlatamıyorsan henüz tam anlamamışsındır. Takıldığın yere geri dön.',
+  'Yanlış yaptığın sorular altın değerinde. Her biri sana neyi bilmediğini gösteriyor.',
+  'Uyku tembellik değil: öğrendiklerin uyurken kalıcı hafızaya yerleşiyor.',
+  'Matematikte aynı tip 20 soru yerine farklı konulardan karışık soru çöz.',
+  'Hep aynı yerde çalış. Beynin o masayı “odak modu” ile eşleştirir.',
+  'Fosforlu kalemle her yeri boyamak yerine kenara kendine bir soru yaz.',
+  'Az ama her gün, çok ama ara sıradan daha güçlüdür.',
+];
+function greeting() { const h = new Date().getHours(); return h < 6 ? 'İyi geceler' : h < 12 ? 'Günaydın' : h < 18 ? 'İyi günler' : 'İyi akşamlar'; }
+
+function renderBugun() {
+  const t = today(), now = new Date();
+  const dueTopics = S.topics.filter(x => x.due && x.due <= t).length;
+  const dueCards = S.cards.filter(c => c.due <= t).length;
+  const openMist = S.mistakes.filter(m => !m.mastered).length;
+  const pt = pomoCount(t);
+  const done = S.habits.log[t] || [];
+  const enabled = HABITS.filter(h => S.habits.enabled.includes(h.id));
+  const doneN = enabled.filter(h => done.includes(h.id)).length;
+  const next = nextLevelHabits();
+  const full = fullDaysSinceLevel();
+  const doy = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5);
+
+  // hafta
+  const days = [...Array(7)].map((_, i) => addDays(t, i - 6));
+  const weekPomo = days.reduce((a, k) => a + pomoCount(k), 0);
+  const byDers = {};
+  days.forEach(k => Object.entries(S.pomo.log[k] || {}).forEach(([d, n]) => byDers[d] = (byDers[d] || 0) + n));
+  const dersArr = Object.entries(byDers).sort((a, b) => b[1] - a[1]);
+  const maxD = Math.max(1, ...dersArr.map(x => x[1]));
+
+  return `
+  <div style="margin:10px 0 4px">
+    <div class="eyebrow">${now.getDate()} ${AYLAR[now.getMonth()]} ${GUN_UZUN[now.getDay()]}</div>
+    <h1>${greeting()} 👋</h1>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>Bugün seni bekleyenler</h2></div>
+    <div class="tiles">
+      <button class="tile ${dueTopics ? 'hot' : ''}" data-act="go" data-v="hatirla"><b>${dueTopics}</b><span>konu tekrarı</span></button>
+      <button class="tile ${dueCards ? 'hot' : ''}" data-act="go" data-v="kartlar"><b>${dueCards}</b><span>kart tekrarı</span></button>
+      <button class="tile" data-act="go" data-v="hatalar"><b>${openMist}</b><span>çözülecek hata</span></button>
+      <button class="tile" data-act="go" data-v="odak"><b>${pt}</b><span>pomodoro bugün</span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">
+      <h2>Alışkanlıklar</h2>
+      <span class="tag ${doneN === enabled.length && enabled.length ? 'ok' : 'pri'}">${doneN}/${enabled.length}</span>
+    </div>
+    <div class="prog"><i style="width:${enabled.length ? doneN / enabled.length * 100 : 0}%"></i></div>
+    ${enabled.map(h => `
+      <button class="habit ${done.includes(h.id) ? 'done' : ''}" data-act="toggleHabit" data-id="${h.id}">
+        <span class="box">${I.check}</span>
+        <span class="grow"><span class="t">${h.ad}</span><br><span class="s">${h.alt}</span></span>
+      </button>`).join('')}
+    ${doneN === enabled.length && enabled.length ? `<p class="center" style="font-weight:800;color:var(--ok)">Bugün hepsi tamam! Harika iş 🎉</p>` : ''}
+    ${next.length ? (full >= 5 ? `
+      <div class="note">
+        <b>⭐ ${full} tam gün yaptın, yeni seviyeye hazırsın!</b>
+        <p class="small">Sıradaki alışkanlıklar: ${next.map(h => h.ad).join(' · ')}</p>
+        <button class="btn primary sm" data-act="levelUp">Ekle</button>
+      </div>` : `
+      <p class="xs muted mt">Hepsini birden başlatmak bunaltır. Bu alışkanlıkları <b>5 tam gün</b> yapınca yenileri açılır. (${full}/5)</p>`) : ''}
+    <button class="linkbtn small" data-act="editHabits">Alışkanlıkları düzenle</button>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>Son 7 gün</h2><span class="tag warn">🔥 ${streak()} gün seri</span></div>
+    <div class="week">
+      ${days.map(k => { const d = parseK(k), n = pomoCount(k); return `
+        <div><div class="d">${GUN_KISA[d.getDay()]}</div>
+        <div class="dot ${activeDay(k) ? 'on' : ''} ${k === t ? 'today' : ''}">${n || (activeDay(k) ? '✓' : '')}</div></div>`; }).join('')}
+    </div>
+    <p class="small muted center" style="margin-top:12px">Dairelerdeki sayılar o günün pomodoro sayısı. Bu hafta <b>${weekPomo}</b> pomodoro = <b>${Math.round(weekPomo * S.pomo.work / 60 * 10) / 10}</b> saat odaklı çalışma.</p>
+    ${dersArr.length ? `<div class="bars mt">${dersArr.map(([d, n]) => `
+      <div class="b"><span>${esc(d)}</span><span class="tr"><i style="width:${n / maxD * 100}%"></i></span><span class="v">${n}🍅</span></div>`).join('')}</div>` : ''}
+  </div>
+
+  <div class="card warm">
+    <div class="eyebrow">Günün ipucu</div>
+    <p style="font-weight:700;margin-bottom:0">${TIPS[doy % TIPS.length]}</p>
+  </div>`;
+}
+
+/* ============ ODAK (pomodoro) ============ */
+const MOLA = [
+  'Kalk, biraz yürü ve su iç. Telefona bakma.',
+  'Pencereden uzağa bak, gözlerini dinlendir.',
+  'Omuzlarını ve boynunu esnet.',
+  'Birkaç derin nefes al, odanı havalandır.',
+  'Mutfağa git, bir meyve ye.',
+];
+const dur = m => (m === 'work' ? S.pomo.work : m === 'short' ? S.pomo.short : S.pomo.long) * 60;
+let T = Object.assign({ mode: 'work', round: 1, running: false, remaining: null, endAt: 0, msg: '', goal: '' }, S.pomo.run || {});
+if (T.remaining == null) T.remaining = dur(T.mode);
+let prepped = false;
+function persistT() { S.pomo.run = { ...T }; save(); }
+
+let AC = null;
+function ensureAudio() {
+  try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch (e) {}
+}
+function beep(freqs) {
+  if (!AC) return;
+  const t0 = AC.currentTime;
+  freqs.forEach((f, i) => {
+    const o = AC.createOscillator(), g = AC.createGain(), t = t0 + i * 0.25;
+    o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.35, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.23);
+    o.connect(g).connect(AC.destination); o.start(t); o.stop(t + 0.25);
+  });
+}
+function alarm(kind, text) {
+  beep(kind === 'work' ? [660, 880, 1100] : [880, 660, 880]);
+  try { navigator.vibrate && navigator.vibrate([250, 120, 250]); } catch (e) {}
+  try { if (document.hidden && 'Notification' in window && Notification.permission === 'granted') new Notification('Odak Koçu', { body: text, icon: 'icon.svg' }); } catch (e) {}
+}
+
+function startT() {
+  ensureAudio();
+  T.running = true; T.endAt = Date.now() + T.remaining * 1000;
+  persistT(); render();
+}
+function pauseT() {
+  T.remaining = Math.max(0, Math.ceil((T.endAt - Date.now()) / 1000));
+  T.running = false; persistT(); render();
+}
+function resetT() { T.running = false; T.remaining = dur(T.mode); persistT(); render(); }
+function addPomo(ders) {
+  const t = today(); const day = S.pomo.log[t] || (S.pomo.log[t] = {});
+  day[ders] = (day[ders] || 0) + 1;
+  if (pomoCount(t) >= 2) markHabit('pomodoro');
+}
+function phaseEnd(at, o = {}) {
+  if (T.mode === 'work') {
+    if (!o.skip) addPomo(S.pomo.lastDers);
+    const next = T.round % 4 === 0 ? 'long' : 'short';
+    T.mode = next; T.remaining = dur(next);
+    if (o.skip) { T.running = false; T.msg = ''; }
+    else {
+      T.running = true; T.endAt = at + T.remaining * 1000;
+      T.msg = `🍅 Pomodoro tamam! <b>Molaya çıkmadan 1 dakika:</b> kitabı kapat ve bu 25 dakikada öğrendiğin 3 şeyi kafandan söyle ya da yaz.<br><br>☕ Mola fikri: ${MOLA[Math.floor(Math.random() * MOLA.length)]}`;
+      if (!o.silent) alarm('work', 'Pomodoro bitti! Mola zamanı.');
+    }
+  } else {
+    if (T.mode === 'long') T.round = 1; else T.round++;
+    T.mode = 'work'; T.remaining = dur('work'); T.running = false;
+    T.msg = o.skip ? '' : 'Mola bitti! Hazır olduğunda yeni pomodoroyu başlat. 💪';
+    if (!o.silent && !o.skip) alarm('break', 'Mola bitti, hazır olduğunda devam!');
+  }
+  persistT(); save();
+  if (current === 'odak') render(); else { renderNav(); }
+}
+// sayfa kapalıyken biten süreleri yakala
+while (T.running && T.endAt <= Date.now()) phaseEnd(T.endAt, { silent: true });
+
+setInterval(() => {
+  if (!T.running) return;
+  const rem = Math.ceil((T.endAt - Date.now()) / 1000);
+  if (rem <= 0) phaseEnd(T.endAt);
+  else if (rem !== T.remaining) { T.remaining = rem; updateT(); }
+}, 250);
+
+function updateT() {
+  const total = dur(T.mode), rem = T.remaining;
+  document.title = T.running ? `${mmss(rem)} · ${T.mode === 'work' ? 'Çalışma' : 'Mola'}` : 'Odak Koçu';
+  if (current !== 'odak') return;
+  const tt = $('#tTime'); if (!tt) return;
+  tt.textContent = mmss(rem);
+  const C = 2 * Math.PI * 108;
+  $('#tRing').style.strokeDashoffset = C * (1 - rem / total);
+}
+
+function renderOdak() {
+  const t = today(), isWork = T.mode === 'work';
+  const C = 2 * Math.PI * 108;
+  const todayLog = Object.entries(S.pomo.log[t] || {});
+  return `
+  <div class="card center">
+    <div class="chips scroll" style="justify-content:flex-start">
+      ${DERSLER.map(d => `<button class="chip ${d === S.pomo.lastDers ? 'on' : ''}" data-act="pomoDers" data-d="${d}" ${T.running && isWork ? 'disabled' : ''}>${d}</button>`).join('')}
+    </div>
+    <div class="modes">
+      <span class="${isWork ? 'on' : ''}">Çalışma</span>
+      <span class="${T.mode === 'short' ? 'on brk' : ''}">Kısa mola</span>
+      <span class="${T.mode === 'long' ? 'on brk' : ''}">Uzun mola</span>
+    </div>
+    <div class="ring ${isWork ? '' : 'brk'}">
+      <svg viewBox="0 0 240 240"><circle class="bgc" cx="120" cy="120" r="108" fill="none" stroke-width="14"/>
+      <circle id="tRing" class="fgc" cx="120" cy="120" r="108" fill="none" stroke-width="14" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - T.remaining / dur(T.mode))}"/></svg>
+      <div class="mid">
+        <div class="time" id="tTime">${mmss(T.remaining)}</div>
+        <div class="sub">${isWork ? esc(S.pomo.lastDers) : 'Mola'}</div>
+        <div class="rounds">${[1, 2, 3, 4].map(i => `<i class="${i < T.round || (i === T.round && !isWork) ? 'on' : ''}"></i>`).join('')}</div>
+      </div>
+    </div>
+    ${T.goal && isWork ? `<div class="goal">🎯 ${esc(T.goal)}</div>` : ''}
+    <div class="row" style="justify-content:center;margin-top:10px">
+      <button class="btn ghost" data-act="tReset" aria-label="Sıfırla">${I.reset}</button>
+      ${T.running ? `<button class="btn primary lg" data-act="tPause">${I.pause} Durdur</button>`
+                  : `<button class="btn primary lg" data-act="tStart">${I.play} ${T.remaining < dur(T.mode) ? 'Devam' : 'Başla'}</button>`}
+      <button class="btn ghost" data-act="tSkip" aria-label="Atla">${I.skip}</button>
+    </div>
+    ${T.msg ? `<div class="note" style="text-align:left">${T.msg}</div>` : ''}
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>Bugün</h2><span class="tag pri">${pomoCount(t)} 🍅 · ${pomoCount(t) * S.pomo.work} dk</span></div>
+    ${todayLog.length ? `<div class="chips">${todayLog.map(([d, n]) => `<span class="tag">${esc(d)}: ${n}</span>`).join('')}</div>`
+      : `<p class="muted small">Henüz pomodoro yok. İlki her zaman en zoru, başla gitsin!</p>`}
+  </div>
+
+  <details class="acc">
+    <summary><span class="em">⚙️</span>Süre ayarları<span class="chev">${I.chev}</span></summary>
+    <div class="body">
+      <div class="settings-grid">
+        <div><label class="f">Çalışma</label><input type="number" min="5" max="90" value="${S.pomo.work}" data-set="work"></div>
+        <div><label class="f">Kısa mola</label><input type="number" min="1" max="30" value="${S.pomo.short}" data-set="short"></div>
+        <div><label class="f">Uzun mola</label><input type="number" min="5" max="60" value="${S.pomo.long}" data-set="long"></div>
+      </div>
+      <p class="xs muted">Dakika cinsinden. 4 çalışmadan sonra uzun mola gelir. Odaklanmakta çok zorlanıyorsan 15 dakikayla başla, sonra artır.</p>
+      ${'Notification' in window && Notification.permission === 'default' ? `<button class="btn sm ghost" data-act="askNotif">Süre bitince bildirim göster</button>` : ''}
+    </div>
+  </details>
+
+  <details class="acc">
+    <summary><span class="em">🍅</span>Pomodoro neden işe yarar?<span class="chev">${I.chev}</span></summary>
+    <div class="body">
+      <p>“3 saat ders çalışacağım” demek gözü korkutur ve dikkat 20. dakikada dağılır. “Sadece 25 dakika” demek kolaydır.</p>
+      <ul class="clean">
+        <li><b>Başlamak kolaylaşır:</b> Kısa ve net bir hedef ertelemeyi azaltır.</li>
+        <li><b>Mola hak edilir:</b> Düzenli mola, yorgunluk birikmeden dinlenmeyi sağlar.</li>
+        <li><b>Ölçülebilir:</b> “Bugün 6 pomodoro yaptım” somut bir başarıdır.</li>
+      </ul>
+      <p class="small"><b>Kural:</b> 25 dakika boyunca sadece seçtiğin ders. Aklına başka bir şey gelirse kâğıda yaz, molada bakarsın.</p>
+    </div>
+  </details>`;
+}
+
+function prepModal() {
+  openModal(`
+    <h2>Başlamadan önce ✅</h2>
+    <p class="muted small">10 saniyelik hazırlık, 25 dakikayı kurtarır.</p>
+    <label class="check"><input type="checkbox" id="pc1"> 📵 Telefon başka odada</label>
+    <label class="check"><input type="checkbox" id="pc2"> 📚 Masada sadece bu dersin malzemeleri var</label>
+    <label class="check"><input type="checkbox" id="pc3"> 💧 Su şişem yanımda</label>
+    <label class="f">Bu 25 dakikada ne yapacağım? (isteğe bağlı)</label>
+    <input id="pcGoal" placeholder="Örn: Fonksiyonlardan 15 karışık soru" value="${esc(T.goal)}" maxlength="120">
+    <button class="btn primary block lg mt" data-act="prepGo">${I.play} Başla</button>`);
+}
+
+/* ============ HATIRLA (boş kâğıt) ============ */
+const GAPS = [1, 2, 4, 23]; // çalıştıktan sonra: 1. gün, 3. gün, 7. gün, 30. gün
+let HF = null;
+let hfTimer = null;
+function startHF(topicId) {
+  const tp = topicId && S.topics.find(x => x.id === topicId);
+  HF = { step: tp ? 2 : 1, ders: tp ? tp.ders : S.pomo.lastDers, konu: tp ? tp.konu : '', topicId: tp ? tp.id : null, recall: '', missing: '', rating: null, t0: tp ? Date.now() : 0 };
+  if (tp) HF.step = 1;
+  render(); window.scrollTo(0, 0);
+}
+function renderHatirla() {
+  clearInterval(hfTimer);
+  if (HF) return renderHF();
+  const t = today();
+  const due = S.topics.filter(x => x.due && x.due <= t).sort((a, b) => a.due.localeCompare(b.due));
+  const rest = S.topics.filter(x => !(x.due && x.due <= t));
+  return `
+  <div style="margin:10px 0 4px"><h1>Hatırla 🧠</h1><p class="muted">Okumak değil, <b>hatırlamaya çalışmak</b> öğretir.</p></div>
+  <button class="btn primary block lg" data-act="hfNew">${I.plus} Yeni konu çalıştım</button>
+  <p class="xs muted center">Bir konuyu çalıştıktan hemen sonra bas. Kitabı kapatıp hatırladıklarını yazacaksın.</p>
+
+  <div class="card">
+    <div class="card-h"><h2>Tekrar zamanı gelenler</h2><span class="tag ${due.length ? 'warn' : 'ok'}">${due.length}</span></div>
+    ${due.length ? due.map(topicRow).join('') : `<div class="empty">Bugün tekrar edilecek konu yok ✨</div>`}
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>Tüm konular</h2><span class="tag">${S.topics.length}</span></div>
+    ${rest.length ? rest.map(topicRow).join('') : `<div class="empty">Henüz konu yok. İlk konunu ekle, uygulama tekrar zamanlarını senin için hatırlasın.</div>`}
+  </div>
+
+  <div class="card soft">
+    <h3>Tekrar takvimi nasıl çalışır?</h3>
+    <p class="small">Konuyu çalıştığın gün → <b>ertesi gün</b> → <b>3. gün</b> → <b>1 hafta sonra</b> → <b>1 ay sonra</b>. Her tekrarda yine kitabı kapatıp yazarsın. Yarısından azını hatırladıysan konu ertesi gün tekrar gelir. 4 tekrar tamamlanınca konu “pekişti” sayılır.</p>
+  </div>`;
+}
+function topicRow(x) {
+  const t = today(), isDue = x.due && x.due <= t;
+  const last = x.notes[x.notes.length - 1];
+  return `<div class="item">
+    <div class="grow" data-act="topicInfo" data-id="${x.id}" style="cursor:pointer">
+      <div class="tt">${esc(x.konu)}</div>
+      <div class="meta">${esc(x.ders)} · ${x.due ? (isDue ? '<span style="color:var(--accent)">tekrar zamanı</span>' : 'sonraki: ' + fmtDate(x.due)) : '✅ pekişti'}${last && last.rating != null ? ` · son: %${last.rating}` : ''}</div>
+      <div class="dots4" style="margin-top:5px">${GAPS.map((_, i) => `<i class="${i < x.stage ? 'on' : ''}"></i>`).join('')}</div>
+    </div>
+    <button class="btn sm ${isDue ? 'primary' : 'ghost'}" data-act="hfReview" data-id="${x.id}">Tekrar et</button>
+  </div>`;
+}
+function renderHF() {
+  const f = HF, tp = f.topicId && S.topics.find(x => x.id === f.topicId);
+  const steps = `<div class="steps">${[1, 2, 3].map(i => `<i class="${i <= f.step ? 'on' : ''}"></i>`).join('')}</div>`;
+  const head = `<div class="row between" style="margin:10px 0"><h2>${tp ? 'Tekrar: ' + esc(tp.konu) : 'Boş kâğıt yöntemi'}</h2><button class="btn sm ghost" data-act="hfCancel">Vazgeç</button></div>`;
+  if (f.step === 1) return `${head}<div class="card">${steps}
+    ${tp ? `<p><b>${esc(tp.ders)}</b> · ${esc(tp.konu)}</p>` : `
+    <label class="f">Ders</label><select data-bind="ders">${dersOptions(f.ders)}</select>
+    <label class="f">Konu</label><input data-bind="konu" value="${esc(f.konu)}" placeholder="Örn: Hücre zarından madde geçişi" maxlength="100">`}
+    <div class="note">📕 <b>Şimdi kitabı ve defteri kapat.</b> Göremeyeceğin bir yere koy. Bir sonraki adımda sadece kafandakileri yazacaksın.</div>
+    <button class="btn primary block lg mt" data-act="hfStep2">Kapattım, başla →</button></div>`;
+  if (f.step === 2) {
+    hfTimer = setInterval(() => { const el = $('#hfT'); if (el) el.textContent = '⏱ ' + mmss(Math.floor((Date.now() - f.t0) / 1000)); else clearInterval(hfTimer); }, 1000);
+    return `${head}<div class="card">${steps}
+    <div class="row between"><h3>Hatırladığın her şeyi yaz</h3><span class="timer-pill" id="hfT">⏱ ${mmss(Math.floor((Date.now() - f.t0) / 1000))}</span></div>
+    <p class="small muted">Tanımlar, formüller, örnekler, maddeler, şekiller… Mükemmel olmak zorunda değil. İstersen kâğıda yaz, burada sadece kısaca not al.</p>
+    <textarea class="big" data-bind="recall" placeholder="Aklıma gelenler...">${esc(f.recall)}</textarea>
+    <p class="xs muted">💡 Takıldığında hemen kitaba bakma. 30 saniye düşün. Zorlanmak, öğrenmenin ta kendisi.</p>
+    <button class="btn primary block lg" data-act="hfStep3">Bitti, şimdi kitabı aç →</button></div>`;
+  }
+  return `${head}<div class="card">${steps}
+    <h3>Kitabı aç ve karşılaştır</h3>
+    <p class="small muted">Yazdıkların:</p>
+    <div class="readbox">${esc(f.recall) || '<span class="muted">(boş)</span>'}</div>
+    <label class="f">Unuttuğun ya da yanlış hatırladığın şeyler</label>
+    <textarea data-bind="missing" placeholder="Örn: Aktif taşımada ATP harcandığını unuttum...">${esc(f.missing)}</textarea>
+    <p class="xs muted">Bunlar senin en değerli notların: bir sonraki tekrarda önce bunlara bak.</p>
+    <label class="f">Konunun ne kadarını hatırladın?</label>
+    <div class="chips">${[25, 50, 75, 100].map(r => `<button class="chip ${f.rating === r ? 'on' : ''}" data-act="hfRate" data-r="${r}">%${r}</button>`).join('')}</div>
+    <button class="btn primary block lg mt" data-act="hfSave" ${f.rating == null ? 'disabled' : ''}>Kaydet ✓</button></div>`;
+}
+function saveHF() {
+  const f = HF, t = today();
+  let tp = f.topicId && S.topics.find(x => x.id === f.topicId);
+  if (!tp) tp = S.topics.find(x => x.ders === f.ders && x.konu.trim().toLocaleLowerCase('tr') === f.konu.trim().toLocaleLowerCase('tr'));
+  const note = { date: t, recall: f.recall, missing: f.missing, rating: f.rating, secs: Math.round((Date.now() - f.t0) / 1000) };
+  let msg;
+  if (!tp) {
+    tp = { id: uid(), ders: f.ders, konu: f.konu.trim(), created: t, stage: 0, due: addDays(t, GAPS[0]), notes: [note] };
+    S.topics.unshift(tp);
+    msg = `Kaydedildi! İlk tekrar: ${fmtDate(tp.due)}`;
+  } else {
+    tp.notes.push(note);
+    if (tp.due && tp.due <= t) {
+      if (f.rating >= 50) { tp.stage++; tp.due = tp.stage >= GAPS.length ? null : addDays(t, GAPS[tp.stage]); }
+      else tp.due = addDays(t, 1);
+    }
+    msg = tp.due ? `Kaydedildi! Sonraki tekrar: ${fmtDate(tp.due)}` : 'Bu konu tamamen pekişti! 🎉';
+  }
+  markHabit('bosKagit');
+  HF = null; save(); render(); toast(msg); window.scrollTo(0, 0);
+}
+function topicInfo(id) {
+  const x = S.topics.find(t => t.id === id); if (!x) return;
+  openModal(`<h2>${esc(x.konu)}</h2><p class="muted small">${esc(x.ders)} · ilk çalışma: ${fmtDate(x.created)} · ${x.due ? 'sonraki tekrar: ' + fmtDate(x.due) : 'pekişti ✅'}</p>
+    ${x.notes.slice().reverse().map(n => `<div class="card" style="margin:10px 0;padding:14px">
+      <div class="row between"><b>${fmtDate(n.date)}</b><span class="tag ${n.rating >= 75 ? 'ok' : n.rating >= 50 ? 'pri' : 'warn'}">%${n.rating}</span></div>
+      ${n.missing ? `<p class="small"><b style="color:var(--danger)">Eksikler:</b> ${esc(n.missing)}</p>` : ''}
+      ${n.recall ? `<details><summary class="small muted" style="cursor:pointer">Hatırladıklarım</summary><div class="readbox small" style="margin-top:6px">${esc(n.recall)}</div></details>` : ''}
+    </div>`).join('')}
+    <div class="row mt"><button class="btn primary grow" data-act="hfReview" data-id="${x.id}">Şimdi tekrar et</button><button class="btn danger" data-act="topicDel" data-id="${x.id}">Sil</button></div>`);
+}
+
+/* ============ KARTLAR ============ */
+const INT = [0, 1, 2, 4, 7, 15, 30]; // kutu → gün
+let CS = null;           // kart oturumu
+let cardFilter = 'Tümü';
+let bulkOpen = false;
+function renderKartlar() {
+  if (CS) return renderCardSession();
+  const t = today();
+  const dersWithCards = [...new Set(S.cards.map(c => c.ders))];
+  if (cardFilter !== 'Tümü' && !dersWithCards.includes(cardFilter)) cardFilter = 'Tümü';
+  const pool = S.cards.filter(c => cardFilter === 'Tümü' || c.ders === cardFilter);
+  const due = pool.filter(c => c.due <= t);
+  const boxCounts = INT.map((_, i) => pool.filter(c => c.box === i).length);
+  const maxB = Math.max(1, ...boxCounts);
+  return `
+  <div style="margin:10px 0 4px"><h1>Kartlar 🃏</h1><p class="muted">Aralıklı tekrar: bildiğin kart daha seyrek, bilemediğin kart daha sık gelir.</p></div>
+
+  <div class="card center">
+    ${dersWithCards.length > 1 ? `<div class="chips scroll" style="margin-bottom:12px">${['Tümü', ...dersWithCards].map(d => `<button class="chip ${d === cardFilter ? 'on' : ''}" data-act="cardFilter" data-d="${esc(d)}">${esc(d)}</button>`).join('')}</div>` : ''}
+    <div style="font-size:44px;font-weight:900;line-height:1">${due.length}</div>
+    <p class="muted" style="margin-top:4px">kart bugün tekrar bekliyor</p>
+    <button class="btn primary lg block" data-act="cardStart" ${due.length ? '' : 'disabled'}>${I.play} Tekrara başla</button>
+    ${!due.length && pool.length ? `<p class="small muted">Bugünlük bitti 🎉 Yarın yeni tekrarlar gelecek.</p>` : ''}
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>Kart ekle</h2><button class="linkbtn small" data-act="bulkToggle">${bulkOpen ? 'Tek tek ekle' : 'Toplu ekle'}</button></div>
+    <label class="f">Ders</label><select id="cDers">${dersOptions(cardFilter !== 'Tümü' ? cardFilter : S.pomo.lastDers)}</select>
+    ${bulkOpen ? `
+      <label class="f">Her satıra bir kart: <code>soru | cevap</code></label>
+      <textarea id="cBulk" class="big" placeholder="Mitokondrinin görevi nedir? | Hücrenin enerji (ATP) üretimi&#10;Osmoz nedir? | Suyun yarı geçirgen zardan az yoğundan çok yoğun ortama geçişi"></textarea>
+      <p class="xs muted">💡 Rehber sekmesindeki “Kart hazırla” AI komutuyla kartları bu biçimde hazırlatıp buraya yapıştırabilirsin. Ama kartları kendin yazmak da öğrenmenin bir parçası!</p>
+      <button class="btn primary block" data-act="bulkAdd">Kartları ekle</button>` : `
+      <label class="f">Ön yüz (soru)</label><textarea id="cFront" style="min-height:70px" placeholder="Örn: Newton’un 2. yasası nedir?"></textarea>
+      <label class="f">Arka yüz (cevap)</label><textarea id="cBack" style="min-height:70px" placeholder="F = m · a"></textarea>
+      <button class="btn primary block mt" data-act="cardAdd">${I.plus} Ekle</button>
+      <p class="xs muted">İyi kart: kısa, tek bir bilgi sorar. “Hücreyi anlat” değil, “Ribozomun görevi nedir?”</p>`}
+  </div>
+
+  ${pool.length ? `
+  <div class="card">
+    <h2>Kutular</h2>
+    <p class="small muted">Bildiğin kart bir sağdaki kutuya geçer ve daha seyrek gelir. Bilemezsen başa döner.</p>
+    <div class="boxes">${boxCounts.map((n, i) => `<div class="bx"><b>${n}</b><i style="height:${n / maxB * 70}%"></i><span>${i === 0 ? 'yeni' : INT[i] + 'g'}</span></div>`).join('')}</div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>Tüm kartlar</h2><span class="tag">${pool.length}</span></div>
+    <input id="cSearch" placeholder="Kartlarda ara..." data-filter="#cardList .item">
+    <div id="cardList" class="mt">${pool.map(c => `
+      <div class="item" data-text="${esc((c.front + ' ' + c.back).toLocaleLowerCase('tr'))}">
+        <div class="grow"><div class="tt">${esc(c.front)}</div><div class="meta">${esc(c.back)}</div>
+        <div class="meta">${esc(c.ders)} · kutu ${c.box} · ${c.due <= t ? '<span style="color:var(--accent)">bugün</span>' : fmtDate(c.due)}</div></div>
+        <button class="btn sm ghost" data-act="cardEdit" data-id="${c.id}">Düzenle</button>
+      </div>`).join('')}</div>
+  </div>` : ''}`;
+}
+function renderCardSession() {
+  const c = S.cards.find(x => x.id === CS.queue[CS.idx]);
+  if (!c) return finishCards();
+  const total = CS.queue.length;
+  return `
+  <div class="row between" style="margin:10px 0"><span class="tag pri">${CS.idx + 1} / ${total}</span><button class="btn sm ghost" data-act="cardEnd">Bitir</button></div>
+  <div class="prog"><i style="width:${CS.idx / total * 100}%"></i></div>
+  <div class="card" style="margin-top:14px">
+    <div class="flash"><span class="lbl">${esc(c.ders)} · soru</span>${esc(c.front)}</div>
+    ${CS.shown ? `
+      <div class="flash back"><span class="lbl">cevap</span>${esc(c.back)}</div>
+      <div class="ans3">
+        <button class="btn danger" data-act="cardAns" data-k="no">Bilemedim<small>tekrar sorulur</small></button>
+        <button class="btn warn" data-act="cardAns" data-k="hard">Zorlandım<small>yarın</small></button>
+        <button class="btn ok" data-act="cardAns" data-k="ok">Bildim<small>${INT[Math.min(6, c.box + 1)]} gün sonra</small></button>
+      </div>` : `
+      <p class="center small muted" style="margin:16px 0 10px">🤔 Önce cevabı <b>kafanda</b> ya da sesli söyle. Sonra kontrol et.</p>
+      <button class="btn primary block lg" data-act="cardShow">Cevabı göster</button>`}
+  </div>`;
+}
+function finishCards() {
+  const r = CS.stats; const t = today();
+  const left = S.cards.filter(c => c.due <= t).length;
+  if (!left) markHabit('kartlar');
+  CS = null; save();
+  setTimeout(() => openModal(`<div class="center"><div style="font-size:52px">🎉</div><h2>Tekrar bitti!</h2>
+    <p class="muted">✅ ${r.ok} bildim · 🟡 ${r.hard} zorlandım · 🔴 ${r.no} bilemedim</p>
+    <p class="small">Bilemediklerin üzülecek bir şey değil: tam olarak onlar sayesinde öğreniyorsun.</p>
+    <button class="btn primary block" data-act="closeModal">Tamam</button></div>`), 0);
+  return renderKartlar();
+}
+function cardEdit(id) {
+  const c = S.cards.find(x => x.id === id); if (!c) return;
+  openModal(`<h2>Kartı düzenle</h2>
+    <label class="f">Ders</label><select id="eDers">${dersOptions(c.ders)}</select>
+    <label class="f">Ön yüz</label><textarea id="eFront" style="min-height:70px">${esc(c.front)}</textarea>
+    <label class="f">Arka yüz</label><textarea id="eBack" style="min-height:70px">${esc(c.back)}</textarea>
+    <div class="row mt"><button class="btn primary grow" data-act="cardSave" data-id="${c.id}">Kaydet</button><button class="btn danger" data-act="cardDel" data-id="${c.id}">Sil</button></div>`);
+}
+
+/* ============ HATALAR ============ */
+const SEBEP = {
+  bilgi:  { ad: 'Konuyu bilmiyordum',    ipucu: 'Bu konuyu “Hatırla” sekmesinden yeniden çalış ve tekrar takvimine al.' },
+  dikkat: { ad: 'Dikkatsizlik',          ipucu: 'Soruyu okurken önemli kelimelerin altını çiz; “değildir”, “yanlıştır” gibi ifadeleri daire içine al.' },
+  yontem: { ad: 'Yöntemi bulamadım',     ipucu: 'Karışık soru çöz: hangi soruda hangi yöntemin kullanıldığını ayırt etmeyi öğrenirsin.' },
+  yorum:  { ad: 'Soruyu yanlış anladım', ipucu: 'Çözmeye başlamadan önce soruda ne istendiğini kendi cümlenle kısaca yaz.' },
+  islem:  { ad: 'İşlem hatası',          ipucu: 'İşlemleri adım adım, düzenli yaz. Sonucu bulunca 10 saniye kontrol et.' },
+  sure:   { ad: 'Süre yetmedi',          ipucu: 'Süre tutarak çöz. Takıldığın soruyu işaretleyip geç, sonra geri dön.' },
+};
+let MS = null;
+let mistFilter = 'Tümü';
+let pendingImg = null;
+function renderHatalar() {
+  if (MS) return renderMistSession();
+  const all = S.mistakes;
+  const dersList = [...new Set(all.map(m => m.ders))];
+  if (mistFilter !== 'Tümü' && !dersList.includes(mistFilter)) mistFilter = 'Tümü';
+  const list = all.filter(m => mistFilter === 'Tümü' || m.ders === mistFilter);
+  const open = list.filter(m => !m.mastered);
+  const counts = Object.keys(SEBEP).map(k => [k, all.filter(m => m.sebep === k).length]).filter(x => x[1]).sort((a, b) => b[1] - a[1]);
+  const maxC = Math.max(1, ...counts.map(x => x[1]));
+  return `
+  <div style="margin:10px 0 4px"><h1>Hata Defteri 📓</h1><p class="muted">Yanlış yaptığın her soru, neyi bilmediğini gösteren bir hazine.</p></div>
+  <div class="row">
+    <button class="btn primary grow lg" data-act="mistNew">${I.plus} Yeni hata</button>
+    <button class="btn warn lg" data-act="mistStart" ${open.length ? '' : 'disabled'}>Tekrar et (${open.length})</button>
+  </div>
+
+  ${counts.length ? `
+  <div class="card">
+    <h2>En çok neden yanlış yapıyorsun?</h2>
+    <div class="bars mt">${counts.map(([k, n]) => `<div class="b" style="grid-template-columns:150px 1fr 30px"><span>${SEBEP[k].ad}</span><span class="tr"><i style="width:${n / maxC * 100}%;background:var(--danger)"></i></span><span class="v">${n}</span></div>`).join('')}</div>
+    <div class="note">💡 <b>${SEBEP[counts[0][0]].ad}:</b> ${SEBEP[counts[0][0]].ipucu}</div>
+  </div>` : ''}
+
+  <div class="card">
+    ${dersList.length > 1 ? `<div class="chips scroll" style="margin-bottom:8px">${['Tümü', ...dersList].map(d => `<button class="chip ${d === mistFilter ? 'on' : ''}" data-act="mistFilter" data-d="${esc(d)}">${esc(d)}</button>`).join('')}</div>` : ''}
+    ${list.length ? list.map(m => `
+      <div class="item" data-act="mistInfo" data-id="${m.id}" style="cursor:pointer">
+        ${m.img ? `<img class="thumb" data-img="${m.id}" alt="">` : `<div class="thumb ph">📝</div>`}
+        <div class="grow"><div class="tt">${esc(m.konu || m.ders)}</div>
+        <div class="meta">${esc(m.ders)} · ${fmtDate(m.created)}</div>
+        <div style="margin-top:4px"><span class="tag danger">${SEBEP[m.sebep]?.ad || ''}</span> ${m.mastered ? '<span class="tag ok">öğrendim ✓</span>' : m.streak ? `<span class="tag pri">${m.streak}/2 doğru</span>` : ''}</div></div>
+      </div>`).join('') : `<div class="empty">Henüz hata eklemedin.<br>Bir sonraki testte yanlış yaptığın soruların fotoğrafını çek ve buraya ekle.</div>`}
+  </div>
+
+  <div class="card soft">
+    <h3>Nasıl kullanılır?</h3>
+    <ul class="clean small">
+      <li>Yanlış yaptığın sorunun fotoğrafını çek veya yaz.</li>
+      <li><b>Neden</b> yanlış yaptığını seç. Bu en önemli kısım!</li>
+      <li>Doğru çözümü ya da ne öğrendiğini kendi cümlenle yaz.</li>
+      <li>Haftada 2-3 kez “Tekrar et”: soruyu çözümüne bakmadan çöz. Arka arkaya 2 kez yapınca “öğrendim” olur.</li>
+    </ul>
+  </div>`;
+}
+function mistForm() {
+  pendingImg = null;
+  openModal(`<h2>Yeni hata ekle</h2>
+    <label class="f">Ders</label><select id="mDers">${dersOptions(S.pomo.lastDers)}</select>
+    <label class="f">Konu</label><input id="mKonu" placeholder="Örn: Polinomlar" maxlength="80">
+    <label class="f">Sorunun fotoğrafı (isteğe bağlı)</label>
+    <label class="btn ghost block" style="cursor:pointer">${I.camera} Fotoğraf çek / seç<input type="file" accept="image/*" capture="environment" id="mImg" data-change="mistImg" class="hidden"></label>
+    <img id="mPrev" class="imgfull hidden" alt="">
+    <label class="f">Soru (fotoğraf yoksa kısaca yaz)</label>
+    <textarea id="mSoru" style="min-height:70px"></textarea>
+    <label class="f">Neden yanlış yaptın?</label>
+    <div class="chips" id="mSebep">${Object.entries(SEBEP).map(([k, v]) => `<button class="chip" data-act="pickSebep" data-k="${k}">${v.ad}</button>`).join('')}</div>
+    <label class="f">Doğru çözüm / ne öğrendim?</label>
+    <textarea id="mCozum" placeholder="Kendi cümlenle yaz. Örn: (a+b)² açılımında 2ab’yi unutmuşum."></textarea>
+    <button class="btn primary block lg mt" data-act="mistSave">Kaydet</button>`);
+}
+function mistInfo(id) {
+  const m = S.mistakes.find(x => x.id === id); if (!m) return;
+  openModal(`<h2>${esc(m.konu || m.ders)}</h2><p class="muted small">${esc(m.ders)} · ${fmtDate(m.created)} · <span class="tag danger">${SEBEP[m.sebep]?.ad || ''}</span></p>
+    ${m.img ? `<img class="imgfull" data-img="${m.id}" alt="Soru fotoğrafı">` : ''}
+    ${m.soru ? `<div class="readbox">${esc(m.soru)}</div>` : ''}
+    <label class="f">Doğru çözüm / ne öğrendim</label>
+    <div class="readbox">${esc(m.cozum) || '<span class="muted">(boş)</span>'}</div>
+    <div class="row mt">
+      <button class="btn ${m.mastered ? 'ghost' : 'ok'} grow" data-act="mistToggle" data-id="${m.id}">${m.mastered ? 'Tekrar listesine al' : 'Öğrendim ✓'}</button>
+      <button class="btn danger" data-act="mistDel" data-id="${m.id}">Sil</button>
+    </div>`);
+}
+function renderMistSession() {
+  const m = S.mistakes.find(x => x.id === MS.queue[MS.idx]);
+  if (!m) { const r = MS.stats; MS = null; setTimeout(() => openModal(`<div class="center"><div style="font-size:52px">💪</div><h2>Tekrar bitti!</h2><p class="muted">✅ ${r.ok} yaptım · 🔴 ${r.no} yapamadım</p><button class="btn primary block" data-act="closeModal">Tamam</button></div>`), 0); return renderHatalar(); }
+  return `
+  <div class="row between" style="margin:10px 0"><span class="tag pri">${MS.idx + 1} / ${MS.queue.length}</span><button class="btn sm ghost" data-act="mistEnd">Bitir</button></div>
+  <div class="card">
+    <p class="muted small" style="margin-top:0">${esc(m.ders)} · ${esc(m.konu)}</p>
+    ${m.img ? `<img class="imgfull" data-img="${m.id}" alt="Soru">` : ''}
+    ${m.soru ? `<div class="readbox">${esc(m.soru)}</div>` : ''}
+    <div class="note small">⚠️ Geçen sefer: <b>${SEBEP[m.sebep]?.ad}</b>. ${SEBEP[m.sebep]?.ipucu || ''}</div>
+    ${MS.shown ? `
+      <label class="f">Doğru çözüm</label><div class="readbox">${esc(m.cozum) || '<span class="muted">(boş)</span>'}</div>
+      <div class="row mt"><button class="btn danger grow" data-act="mistAns" data-k="no">Yapamadım</button><button class="btn ok grow" data-act="mistAns" data-k="ok">Doğru yaptım ✓</button></div>`
+    : `<p class="center small muted">✍️ Önce kâğıtta <b>kendin çöz</b>. Bitirince ya da gerçekten takılınca çözüme bak.</p>
+       <button class="btn primary block lg" data-act="mistShow">Çözümü göster</button>`}
+  </div>`;
+}
+
+/* ============ REHBER ============ */
+const TECH = [
+  { em: '🧠', ad: 'Kendini test et (aktif hatırlama)', tag: 'En güçlüsü', tab: 'hatirla',
+    ne: 'Bilgiyi tekrar tekrar okumak yerine, kitabı kapatıp kafandan çıkarmaya çalışmak.',
+    nasil: 'Konuyu bir kez oku → kitabı kapat → boş kâğıda hatırladığın her şeyi yaz → kitabı aç, eksiklerini farklı renkle tamamla. Soru çözmek ve kartlarla çalışmak da kendini test etmektir.',
+    neden: 'Her hatırlama denemesi, o bilgiye giden yolu güçlendirir. Okurken her şey tanıdık gelir ve “biliyorum” sanırsın; kitabı kapatınca gerçekte ne bildiğin ortaya çıkar.',
+    src: 'Roediger & Karpicke (2006): Kendini test eden öğrenciler bir hafta sonra, sadece tekrar okuyanlardan belirgin şekilde daha fazlasını hatırladı. Dunlosky ve arkadaşları (2013) yöntemleri karşılaştırdığı büyük derlemede bunu “yüksek fayda” sınıfına koydu.' },
+  { em: '📅', ad: 'Aralıklı tekrar', tag: 'Kalıcılık', tab: 'kartlar',
+    ne: 'Aynı süreyi tek seferde değil, günlere yayarak çalışmak.',
+    nasil: '1. gün öğren → ertesi gün → 3. gün → 1 hafta sonra → 1 ay sonra. Her tekrarda yine kendini test et. Bu uygulamadaki “Hatırla” ve “Kartlar” bu takvimi senin için tutar.',
+    neden: 'Unutmaya başladığın anda hatırlamaya çalışmak, bilgiyi kalıcı hafızaya taşır. Sınavdan önceki gece 4 saat çalışmak yerine 4 gün 1’er saat çalışmak çok daha kalıcıdır.',
+    src: 'Dunlosky ve arkadaşları (2013) aralıklı çalışmayı da “yüksek fayda” sınıfına koydu. Bu etki 100 yılı aşkın süredir yüzlerce deneyle tekrar tekrar gösterildi.' },
+  { em: '🔀', ad: 'Karışık çalışma', tag: 'Sınav becerisi', tab: 'hatalar',
+    ne: 'Aynı tip soruları arka arkaya çözmek yerine farklı konuları karıştırmak.',
+    nasil: '20 tane fonksiyon sorusu yerine: 5 fonksiyon + 5 polinom + 5 trigonometri, karışık sırayla. Deneme sınavları zaten böyledir.',
+    neden: 'Sınavda sorular karışık gelir. Aynı tip soruları peş peşe çözünce beyin “bu hangi yöntemle çözülür?” kararını vermeyi öğrenmez. Başta zor gelir ve daha çok hata yaparsın. Bu “istenen zorluk”tur, öğrenme tam orada olur.',
+    src: 'Rohrer ve Taylor’ın matematik deneylerinde karışık çalışan öğrenciler, sonraki testte konu konu çalışanlardan belirgin şekilde daha başarılı oldu.' },
+  { em: '🗣️', ad: 'Anlatarak öğren (Feynman tekniği)', tag: 'Anlama', tab: null,
+    ne: 'Konuyu hiç bilmeyen birine, örneğin 10 yaşında bir çocuğa anlatır gibi basitçe anlatmak.',
+    nasil: 'Sesli anlat: aynaya, duvara, bir arkadaşına ya da kendini kaydederek. Zor kelimelerin arkasına saklanma. Takıldığın yeri not al, kitaba dön, sonra tekrar anlat.',
+    neden: 'Takıldığın yer, aslında anlamadığın yerdir. Anlatmak hem kendini test etmektir hem de bilgiyi kendi cümlelerinle yeniden kurmandır.',
+    src: 'Bir konuyu kendine açıklamanın (self-explanation) anlamayı artırdığı birçok çalışmada gösterildi. Dunlosky (2013) bu yöntemi “orta fayda” sınıfına koydu.' },
+  { em: '📓', ad: 'Hata defteri', tag: 'Verimli tekrar', tab: 'hatalar',
+    ne: 'Yanlış yaptığın soruları, neden yanlış yaptığınla birlikte biriktirmek.',
+    nasil: 'Soru + neden yanlış yaptım + doğru çözüm. Sınavlardan önce bütün kitabı değil, sadece bu defteri tekrar et.',
+    neden: 'Zaten bildiğin şeyleri tekrar etmek zaman kaybıdır. Hata defteri seni tam olarak eksik olduğun yere götürür. “Neden” kısmı ise tekrar eden hatalarını gösterir: dikkatsizlik mi, bilgi eksiği mi?',
+    src: 'Hatalardan geri bildirim almanın ve onları tekrar denemenin öğrenmeyi güçlendirdiği iyi bilinir. Hata defteri, kendini test etme ve aralıklı tekrarın pratik bir birleşimidir.' },
+  { em: '🎯', ad: 'Odak ve beyin bakımı', tag: 'Temel', tab: 'odak',
+    ne: 'Doğru yöntem, odaklanamayan bir beyinde çalışmaz. Önce zemini hazırla.',
+    nasil: '📵 Telefon başka odada · 🍅 25 dk çalış, 5 dk mola · 🚶 Molada telefon değil, hareket · 😴 Gece 8-10 saat uyku · 🏃 Haftada 3-4 kez 20-30 dk hareket · 🪑 Hep aynı yerde çalış, yatakta değil · 📝 Somut plan: “17:00’de masamda 2 pomodoro matematik”',
+    neden: 'Telefon görüş alanındayken beyin onu görmezden gelmek için sürekli enerji harcar. Uyku, gün içinde öğrenilenleri kalıcı hafızaya yerleştirir. Somut “ne zaman, nerede, ne” planı, “çalışacağım” niyetinin gerçekten yapılma ihtimalini artırır.',
+    src: 'Ward ve arkadaşları (2017): Telefon masada ters ve sessizdeyken bile, başka odadayken olduğundan daha düşük dikkat ve hafıza puanları ölçüldü. Gollwitzer’in “uygulama niyetleri” çalışmaları: somut plan yapanlar hedeflerini daha sık gerçekleştiriyor.' },
+];
+const QUIZ = [
+  { q: 'Bir konuyu en kalıcı öğrenmek için hangisi daha etkili?', o: ['Bir kez okuyup kitabı kapatmak ve hatırladıklarını yazmak', 'Konuyu art arda 3 kez okumak', 'Önemli yerleri fosforlu kalemle boyamak'], a: 0, e: 'Hatırlamaya çalışmak (aktif hatırlama) bilgiyi güçlendirir. Tekrar okumak sadece “tanıdık” hissi verir.' },
+  { q: 'Sınava 4 gün var ve toplam 4 saat çalışacaksın. Hangisi daha iyi?', o: ['Her gün 1 saat', 'Sınavdan önceki gün 4 saat', 'Fark etmez, toplam süre aynı'], a: 0, e: 'Aralıklı tekrar: aynı süre günlere yayılınca çok daha kalıcı olur.' },
+  { q: 'Telefon sessizde ve ekranı ters şekilde masada duruyor. Sorun var mı?', o: ['Evet, yine de dikkati azaltıyor. Başka odada olmalı', 'Hayır, sessizdeyse sorun yok', 'Sadece bildirim gelirse sorun olur'], a: 0, e: 'Araştırmalar telefon sadece görüş alanında olsa bile dikkat ve hafızanın düştüğünü gösteriyor.' },
+  { q: 'Matematikte “karışık çalışma” ne demek?', o: ['Farklı konulardan soruları karışık sırayla çözmek', 'Aynı tip 20 soruyu art arda çözmek', 'Aynı anda hem matematik hem tarih okumak'], a: 0, e: 'Karışık çalışma “hangi yöntemi kullanmalıyım?” kararını vermeyi öğretir. Sınavda tam olarak bu beceri gerekir.' },
+  { q: 'Bir konuyu sesli anlatırken bir yerde takıldın. Bu ne anlama gelir?', o: ['Tam orayı henüz anlamamışsın, oraya geri dönmelisin', 'Anlatma yöntemi sana göre değil', 'O kısmı ezberlemen gerekiyor'], a: 0, e: 'Feynman tekniğinin amacı tam da bu: takıldığın yer, eksiğinin olduğu yer.' },
+  { q: 'Pomodoro molasında en iyi seçenek hangisi?', o: ['Kalkıp yürümek, su içmek, esnemek', 'Biraz Instagram’a bakmak', 'Bir sonraki konuyu okumaya başlamak'], a: 0, e: 'Telefon beyni dinlendirmez, yeni uyaranlarla doldurur. Hareket ve dinlenme, sonraki pomodoroya enerji verir.' },
+  { q: 'Sınavdan önceki gece için en iyisi hangisi?', o: ['Normal saatte uyumak', 'Sabaha kadar tekrar yapmak', 'Erken yatıp gece 3’te kalkıp çalışmak'], a: 0, e: 'Öğrendiklerin uykuda kalıcı hale gelir. Uykusuz bir beyin hem hatırlamakta hem dikkat etmekte zorlanır.' },
+  { q: 'Hata defterine ne yazılmalı?', o: ['Soru + neden yanlış yaptığım + doğru çözüm', 'Sadece doğru cevap', 'Sadece kaç yanlış yaptığım'], a: 0, e: '“Neden” kısmı en değerlisi: tekrar eden hatalarını (dikkatsizlik, bilgi eksiği…) görmeni sağlar.' },
+  { q: 'Hangi plan daha çok işe yarar?', o: ['“Saat 17:00’de masamda 2 pomodoro matematik çalışacağım.”', '“Bugün çok çalışacağım.”', '“Canım istediğinde çalışırım.”'], a: 0, e: 'Ne zaman, nerede ve ne yapacağını belirten somut planların uygulanma ihtimali çok daha yüksek.' },
+  { q: 'Kendini test ederken çok zorlanıyorsun. Ne yapmalısın?', o: ['Devam et, zorlanmak öğrenmenin parçası', 'Bırak, konuyu tekrar okumaya dön', 'Hemen cevaba bak'], a: 0, e: 'Buna “istenen zorluk” denir: hatırlamak için uğraşmak, bilgiyi daha kalıcı yapar. Yine de kısa bir süre uğraştıktan sonra cevabı kontrol etmeyi unutma.' },
+];
+let QZ = null;
+let aiKonu = '', aiDers = 'Biyoloji';
+const PROMPTS = [
+  { t: 'Basitçe anlat + kontrol et', p: 'Bana {ders} dersinden "{konu}" konusunu 15 yaşındaki birine anlatır gibi, günlük hayattan örneklerle basitçe anlat. Sonunda anladığımı kontrol etmek için bana 3 soru sor ve cevaplarımı bekle.' },
+  { t: 'Beni test et (tek tek)', p: '{ders} dersinden "{konu}" konusunda bana 10. sınıf seviyesinde 10 soru sor. Hepsini birden değil, tek tek sor. Cevabımı yazınca doğru mu yanlış mı söyle, kısaca açıkla, sonra sıradaki soruya geç.' },
+  { t: 'Ben anlatayım, sen düzelt', p: 'Sana "{konu}" konusunu kendi cümlelerimle anlatacağım. Eksik veya yanlış yerlerimi bul ama doğrusunu hemen söyleme, önce ipucu ver ki kendim düzelteyim.\n\nBenim anlatımım:\n[buraya yaz]' },
+  { t: 'Sadece ipucu ver', p: 'Bu soruyu çözemedim. Lütfen çözümü verme, sadece ilk adım için küçük bir ipucu ver. Takılırsam bir ipucu daha isteyeceğim.\n\nSoru:\n[soruyu buraya yaz]' },
+  { t: 'Karışık soru seti', p: '{ders} dersinde "{konu}" ve ilgili konulardan, 10. sınıf seviyesinde, farklı alt konulardan karışık 8 soru hazırla. Cevapları en sona, "Cevaplar" başlığı altına yaz ki önce kendim çözebileyim.' },
+  { t: 'Kart hazırla (uygulamaya yapıştır)', p: '{ders} dersinden "{konu}" konusu için en fazla 15 tane soru-cevap kartı hazırla. Her kart tek bir bilgiyi sorsun, cevaplar kısa olsun. Her satır tam olarak şu biçimde olsun, başka hiçbir şey yazma:\nsoru | cevap' },
+];
+function renderRehber() {
+  return `
+  <div style="margin:10px 0 4px"><h1>Rehber 📚</h1><p class="muted">Çok çalışmak değil, <b>doğru</b> çalışmak.</p></div>
+
+  <div class="card warm">
+    <h2>❌ Bunlar pek işe yaramıyor</h2>
+    <ul class="clean">
+      <li><b>Konuyu tekrar tekrar okumak:</b> “Biliyorum” hissi verir ama akılda kalma oranı düşüktür.</li>
+      <li><b>Her yeri fosforlu kalemle boyamak:</b> Neyin önemli olduğunu seçmeyi zorlaştırır.</li>
+      <li><b>Kitaptan özeti aynen kopyalamak:</b> Elin çalışır, beynin çalışmaz.</li>
+      <li><b>Sınav öncesi sabahlamak:</b> Uykusuz beyin hem hatırlamakta hem dikkat etmekte zorlanır.</li>
+    </ul>
+    <p class="small muted" style="margin-bottom:0">Dunlosky ve arkadaşlarının (2013) 10 yöntemi karşılaştırdığı derlemede tekrar okuma ve fosforlu kalemle işaretleme “düşük fayda” sınıfında yer aldı.</p>
+  </div>
+
+  <h2 style="margin:22px 0 4px">✅ İşe yarayan 6 yöntem</h2>
+  ${TECH.map((x, i) => `
+    <details class="acc" ${i === 0 ? 'open' : ''}>
+      <summary><span class="em">${x.em}</span><span class="grow">${x.ad}<br><span class="tag pri">${x.tag}</span></span><span class="chev">${I.chev}</span></summary>
+      <div class="body">
+        <div class="kv"><b>Ne?</b>${x.ne}</div>
+        <div class="kv"><b>Nasıl?</b>${x.nasil}</div>
+        <div class="kv"><b>Neden işe yarıyor?</b>${x.neden}</div>
+        <div class="src">📖 ${x.src}</div>
+        ${x.tab ? `<button class="btn sm primary mt" data-act="go" data-v="${x.tab}">Uygulamada dene → ${VIEWS[x.tab].t}</button>` : ''}
+      </div>
+    </details>`).join('')}
+
+  <div class="card" id="quiz">${renderQuiz()}</div>
+
+  <div class="card">
+    <h2>🤖 Yapay zekâyı doğru kullan</h2>
+    <p class="small">AI’ı <b>öğretmen</b> gibi kullan, <b>kopya kâğıdı</b> gibi değil. Ödevini AI’a yaptırırsan öğrenme gerçekleşmez. Konuyu ve dersi seç, komutu kopyala, ChatGPT, Claude ya da Gemini’ye yapıştır.</p>
+    <div class="row"><select id="aiDers" style="flex:1;min-width:130px">${dersOptions(aiDers)}</select>
+    <input id="aiKonu" style="flex:2;min-width:160px" placeholder="Konu (örn: Mitoz bölünme)" value="${esc(aiKonu)}"></div>
+    <div id="prompts">${renderPrompts()}</div>
+  </div>
+
+  <div class="card">
+    <h2>📅 Örnek günlük plan (okul sonrası)</h2>
+    <table class="plan">
+      <tr><td>17:00</td><td>Bugün okulda işlenen derslerin kısa tekrarı: kitap kapalı, hatırladıklarını yaz</td></tr>
+      <tr><td>17:30</td><td>2 pomodoro: zor ders (matematik/fizik), karışık soru</td></tr>
+      <tr><td>18:30</td><td>Mola + yemek (telefonsuz bir yürüyüş çok iyi gelir)</td></tr>
+      <tr><td>19:30</td><td>2 pomodoro: sözel ya da ezber dersler + kart tekrarı</td></tr>
+      <tr><td>20:30</td><td>Hata defterine 15 dakika bakış</td></tr>
+      <tr><td>Hafta sonu</td><td>Haftanın genel tekrarı + 1 deneme / test</td></tr>
+    </table>
+    <p class="small muted">Toplamda 2-2,5 saat yeterli. Kısa, yoğun ve düzenli çalışmak; uzun ama dağınık çalışmaktan çok daha iyidir.</p>
+  </div>
+
+  <div class="card soft">
+    <h2>🌱 Hepsini birden yapma!</h2>
+    <p class="small">Yeni alışkanlıklar adım adım oturur. Uygulama bunu senin yerine ayarlar:</p>
+    <table class="plan">
+      <tr><td>1. adım</td><td>Telefon başka odada + kitabı kapatıp hatırladıklarını yaz</td></tr>
+      <tr><td>2. adım</td><td>+ Pomodoro + hata defteri</td></tr>
+      <tr><td>3. adım</td><td>+ Kart tekrarı + karışık soru</td></tr>
+      <tr><td>4. adım</td><td>+ Sesli anlatma, uyku ve hareket</td></tr>
+    </table>
+    <p class="small muted" style="margin-bottom:0">Bir adımdaki alışkanlıkları 5 tam gün yapınca “Bugün” sayfasında sonraki adım açılır.</p>
+  </div>
+
+  <div class="card">
+    <h2>💾 Verilerin</h2>
+    <p class="small muted">Her şey sadece bu cihazda, bu tarayıcıda saklanır. Hiçbir yere gönderilmez. Telefon değiştirirsen ya da tarayıcı verilerini silersen kaybolmasın diye ara sıra yedek al.</p>
+    <div class="row">
+      <button class="btn ghost" data-act="exportData">⬇️ Yedek indir</button>
+      <label class="btn ghost" style="cursor:pointer">⬆️ Yedeği yükle<input type="file" accept="application/json,.json" class="hidden" data-change="importData"></label>
+      <button class="btn danger" data-act="wipe">Tümünü sil</button>
+    </div>
+    <p class="xs muted mt">📱 İpucu: Tarayıcı menüsünden “Ana ekrana ekle” dersen uygulama gibi açılır.</p>
+  </div>`;
+}
+function renderPrompts() {
+  const k = aiKonu.trim() || '[konu]';
+  return PROMPTS.map((x, i) => `<div class="prompt"><div class="row between" style="margin-bottom:6px"><b>${x.t}</b><button class="btn sm primary" data-act="copyPrompt" data-i="${i}">Kopyala</button></div><p>${esc(x.p.replace(/\{konu\}/g, k).replace(/\{ders\}/g, aiDers))}</p></div>`).join('');
+}
+function renderQuiz() {
+  if (!QZ) return `
+    <h2>🎯 Kendini test et</h2>
+    <p class="small">Okuduklarını gerçekten anladın mı? Bu mini test de bir <b>aktif hatırlama</b> alıştırması: ${QUIZ.length} soru, 2 dakika.</p>
+    ${S.quizBest != null ? `<p class="small muted">En iyi skorun: <b>${S.quizBest}/${QUIZ.length}</b></p>` : ''}
+    <button class="btn primary block" data-act="quizStart">Teste başla</button>`;
+  if (QZ.i >= QZ.order.length) {
+    const s = QZ.score, n = QUIZ.length;
+    return `<div class="center"><div style="font-size:48px">${s === n ? '🏆' : s >= n * 0.7 ? '🎉' : '📚'}</div>
+      <h2>${s}/${n} doğru</h2>
+      <p class="muted">${s === n ? 'Mükemmel! Artık bu yöntemleri gerçekten biliyorsun.' : s >= n * 0.7 ? 'Çok iyi! Yanlışlarının açıklamalarına bir kez daha göz at.' : 'Sorun değil. Yöntemleri bir kez daha oku ve 1-2 gün sonra testi tekrar çöz (bu da aralıklı tekrar!).'}</p>
+      <button class="btn primary block" data-act="quizStart">Tekrar çöz</button></div>`;
+  }
+  const qi = QZ.order[QZ.i], q = QUIZ[qi], opts = QZ.opts[QZ.i];
+  return `
+    <div class="row between"><span class="tag pri">Soru ${QZ.i + 1}/${QUIZ.length}</span><span class="tag">${QZ.score} doğru</span></div>
+    <h3 style="margin:12px 0 4px">${q.q}</h3>
+    ${opts.map(oi => {
+      let cls = '';
+      if (QZ.picked != null) { if (oi === q.a) cls = 'right'; else if (oi === QZ.picked) cls = 'wrong'; }
+      return `<button class="opt ${cls}" data-act="quizPick" data-o="${oi}" ${QZ.picked != null ? 'disabled' : ''}>${q.o[oi]}</button>`;
+    }).join('')}
+    ${QZ.picked != null ? `<div class="note small">${QZ.picked === q.a ? '✅ Doğru! ' : '❌ Doğrusu işaretli. '}${q.e}</div>
+      <button class="btn primary block mt" data-act="quizNext">${QZ.i + 1 < QUIZ.length ? 'Sonraki soru →' : 'Sonucu gör'}</button>` : ''}`;
+}
+
+/* ---------- yedek ---------- */
+async function exportData() {
+  const images = {};
+  for (const m of S.mistakes.filter(m => m.img)) {
+    try {
+      const b = await IDB.get(m.id);
+      if (b) images[m.id] = await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(b); });
+    } catch (e) {}
+  }
+  const blob = new Blob([JSON.stringify({ app: 'odak-kocu', v: 1, state: S, images })], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `odak-kocu-yedek-${today()}.json`;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast('Yedek indirildi');
+}
+async function importData(file) {
+  try {
+    const o = JSON.parse(await file.text());
+    if (o.app !== 'odak-kocu' || !o.state) throw new Error('bad');
+    if (!confirm('Bu yedek yüklenince şu anki verilerin yerine geçecek. Devam edilsin mi?')) return;
+    S = merge(DEFAULT(), o.state); save();
+    try { await IDB.clear(); } catch (e) {}
+    for (const [id, url] of Object.entries(o.images || {})) {
+      try { const b = await (await fetch(url)).blob(); await IDB.put(id, b); } catch (e) {}
+    }
+    Object.keys(imgURL).forEach(k => delete imgURL[k]);
+    T = Object.assign({ mode: 'work', round: 1, running: false, remaining: null, endAt: 0, msg: '', goal: '' }, S.pomo.run || {});
+    if (T.remaining == null) T.remaining = dur(T.mode);
+    render(); toast('Yedek yüklendi ✓');
+  } catch (e) { toast('Bu dosya bir Odak Koçu yedeği değil.'); }
+}
+
+/* ---------- olaylar ---------- */
+async function copyText(txt) {
+  try { await navigator.clipboard.writeText(txt); }
+  catch (e) { const ta = document.createElement('textarea'); ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (_) {} ta.remove(); }
+  toast('Kopyalandı! Şimdi AI sohbetine yapıştır.');
+}
+
+const A = {
+  go: el => { closeModal(); go(el.dataset.v); },
+  closeModal: () => closeModal(),
+
+  toggleHabit: el => { const id = el.dataset.id; markHabit(id, !(S.habits.log[today()] || []).includes(id)); render(); },
+  levelUp: () => {
+    const next = nextLevelHabits();
+    S.habits.level++; S.habits.levelDate = today();
+    next.forEach(h => S.habits.enabled.includes(h.id) || S.habits.enabled.push(h.id));
+    save(); render(); toast('Yeni alışkanlıklar eklendi 🌱');
+  },
+  editHabits: () => openModal(`<h2>Alışkanlıklar</h2><p class="small muted">Hangilerini takip etmek istiyorsun? Az ve sürdürülebilir olan, çok ve yarım kalandan iyidir.</p>
+    ${HABITS.map(h => `<label class="check"><input type="checkbox" data-habit="${h.id}" ${S.habits.enabled.includes(h.id) ? 'checked' : ''}> <span>${h.ad}<br><span class="xs muted">${h.alt}</span></span></label>`).join('')}
+    <button class="btn primary block mt" data-act="saveHabits">Kaydet</button>`),
+  saveHabits: () => {
+    const on = $$('[data-habit]').filter(x => x.checked).map(x => x.dataset.habit);
+    if (!on.length) return toast('En az bir alışkanlık seç.');
+    S.habits.enabled = on;
+    S.habits.level = Math.max(...on.map(id => H(id).lvl));
+    S.habits.levelDate = today();
+    save(); closeModal(); render();
+  },
+
+  pomoDers: el => { if (T.running && T.mode === 'work') return; S.pomo.lastDers = el.dataset.d; save(); render(); },
+  tStart: () => { if (T.mode === 'work' && !prepped && T.remaining === dur('work')) return prepModal(); T.msg = ''; startT(); },
+  prepGo: () => {
+    if ($('#pc1').checked) markHabit('telefon');
+    T.goal = $('#pcGoal').value.trim(); prepped = true; T.msg = '';
+    closeModal(); startT();
+  },
+  tPause: () => pauseT(),
+  tReset: () => resetT(),
+  tSkip: () => { if (T.mode === 'work' && !confirm('Bu pomodoroyu atlarsan sayılmayacak. Atlansın mı?')) return; phaseEnd(Date.now(), { skip: true }); },
+  askNotif: async () => { try { await Notification.requestPermission(); } catch (e) {} render(); },
+
+  hfNew: () => startHF(null),
+  hfReview: el => { closeModal(); current = 'hatirla'; startHF(el.dataset.id); },
+  hfCancel: () => { if ((HF.recall || HF.missing) && !confirm('Yazdıkların kaydedilmeyecek. Çıkılsın mı?')) return; HF = null; render(); },
+  hfStep2: () => {
+    if (!HF.topicId && !HF.konu.trim()) return toast('Önce konunun adını yaz.');
+    HF.step = 2; HF.t0 = Date.now(); render(); window.scrollTo(0, 0); setTimeout(() => $('[data-bind="recall"]')?.focus(), 50);
+  },
+  hfStep3: () => {
+    if (!HF.recall.trim() && !confirm('Hiçbir şey yazmadın. Hiç hatırlamıyorsan sorun değil, devam edelim mi?')) return;
+    HF.step = 3; render(); window.scrollTo(0, 0);
+  },
+  hfRate: el => { HF.rating = +el.dataset.r; render(); },
+  hfSave: () => saveHF(),
+  topicInfo: el => topicInfo(el.dataset.id),
+  topicDel: el => { if (!confirm('Bu konu ve notları silinsin mi?')) return; S.topics = S.topics.filter(x => x.id !== el.dataset.id); save(); closeModal(); render(); },
+
+  cardFilter: el => { cardFilter = el.dataset.d; render(); },
+  bulkToggle: () => { bulkOpen = !bulkOpen; render(); },
+  cardAdd: () => {
+    const f = $('#cFront').value.trim(), b = $('#cBack').value.trim();
+    if (!f || !b) return toast('Kartın iki yüzünü de doldur.');
+    S.cards.unshift({ id: uid(), ders: $('#cDers').value, front: f, back: b, box: 0, due: today(), created: today() });
+    save(); render(); toast('Kart eklendi ✓'); setTimeout(() => $('#cFront')?.focus(), 30);
+  },
+  bulkAdd: () => {
+    const ders = $('#cDers').value; let n = 0;
+    $('#cBulk').value.split('\n').forEach(line => {
+      const i = line.indexOf('|'); if (i < 0) return;
+      const f = line.slice(0, i).replace(/^\s*[-*\d.)]+\s*/, '').trim(), b = line.slice(i + 1).trim();
+      if (f && b) { S.cards.push({ id: uid(), ders, front: f, back: b, box: 0, due: today(), created: today() }); n++; }
+    });
+    if (!n) return toast('Kart bulunamadı. Her satır “soru | cevap” biçiminde olmalı.');
+    save(); bulkOpen = false; render(); toast(`${n} kart eklendi ✓`);
+  },
+  cardStart: () => {
+    const t = today();
+    const q = S.cards.filter(c => c.due <= t && (cardFilter === 'Tümü' || c.ders === cardFilter)).map(c => c.id);
+    CS = { queue: shuffle(q), idx: 0, shown: false, stats: { ok: 0, hard: 0, no: 0 } }; render(); window.scrollTo(0, 0);
+  },
+  cardShow: () => { CS.shown = true; render(); },
+  cardAns: el => {
+    const c = S.cards.find(x => x.id === CS.queue[CS.idx]); const t = today(); const k = el.dataset.k;
+    if (k === 'no') { c.box = 0; c.due = t; CS.queue.push(c.id); }
+    else if (k === 'hard') { c.box = Math.max(1, c.box); c.due = addDays(t, 1); }
+    else { c.box = Math.min(6, c.box + 1); c.due = addDays(t, INT[c.box]); }
+    CS.stats[k]++; CS.idx++; CS.shown = false; save(); render();
+  },
+  cardEnd: () => { CS.idx = CS.queue.length; render(); },
+  cardEdit: el => cardEdit(el.dataset.id),
+  cardSave: el => {
+    const c = S.cards.find(x => x.id === el.dataset.id); const f = $('#eFront').value.trim(), b = $('#eBack').value.trim();
+    if (!f || !b) return toast('Kartın iki yüzünü de doldur.');
+    c.front = f; c.back = b; c.ders = $('#eDers').value; save(); closeModal(); render();
+  },
+  cardDel: el => { if (!confirm('Kart silinsin mi?')) return; S.cards = S.cards.filter(x => x.id !== el.dataset.id); save(); closeModal(); render(); },
+
+  mistNew: () => mistForm(),
+  pickSebep: el => { $$('#mSebep .chip').forEach(c => c.classList.toggle('on', c === el)); },
+  mistSave: async () => {
+    const sebep = $('#mSebep .chip.on')?.dataset.k;
+    const soru = $('#mSoru').value.trim();
+    if (!pendingImg && !soru) return toast('Sorunun fotoğrafını ekle ya da soruyu kısaca yaz.');
+    if (!sebep) return toast('Neden yanlış yaptığını seç. En önemli kısım bu!');
+    const m = { id: uid(), ders: $('#mDers').value, konu: $('#mKonu').value.trim(), soru, sebep, cozum: $('#mCozum').value.trim(), img: false, created: today(), streak: 0, mastered: false };
+    if (pendingImg) { try { await IDB.put(m.id, pendingImg); m.img = true; } catch (e) { toast('Fotoğraf kaydedilemedi, soru metinle kaydedildi.'); } }
+    S.mistakes.unshift(m); pendingImg = null; markHabit('hata'); save(); closeModal(); render(); toast('Hata defterine eklendi ✓');
+  },
+  mistInfo: el => mistInfo(el.dataset.id),
+  mistToggle: el => { const m = S.mistakes.find(x => x.id === el.dataset.id); m.mastered = !m.mastered; m.streak = m.mastered ? 2 : 0; save(); closeModal(); render(); },
+  mistDel: async el => {
+    if (!confirm('Bu hata silinsin mi?')) return;
+    const id = el.dataset.id; S.mistakes = S.mistakes.filter(x => x.id !== id);
+    try { await IDB.del(id); } catch (e) {}
+    save(); closeModal(); render();
+  },
+  mistFilter: el => { mistFilter = el.dataset.d; render(); },
+  mistStart: () => {
+    const q = S.mistakes.filter(m => !m.mastered && (mistFilter === 'Tümü' || m.ders === mistFilter)).map(m => m.id);
+    MS = { queue: shuffle(q), idx: 0, shown: false, stats: { ok: 0, no: 0 } }; render(); window.scrollTo(0, 0);
+  },
+  mistShow: () => { MS.shown = true; render(); },
+  mistAns: el => {
+    const m = S.mistakes.find(x => x.id === MS.queue[MS.idx]);
+    if (el.dataset.k === 'ok') { m.streak = (m.streak || 0) + 1; if (m.streak >= 2) { m.mastered = true; toast('Bu soruyu artık öğrendin! 🎉'); } MS.stats.ok++; }
+    else { m.streak = 0; MS.stats.no++; }
+    m.lastSeen = today(); markHabit('hata');
+    MS.idx++; MS.shown = false; save(); render(); window.scrollTo(0, 0);
+  },
+  mistEnd: () => { MS.idx = MS.queue.length; render(); },
+
+  quizStart: () => {
+    const order = shuffle(QUIZ.map((_, i) => i));
+    QZ = { order, opts: order.map(qi => shuffle(QUIZ[qi].o.map((_, i) => i))), i: 0, score: 0, picked: null };
+    $('#quiz').innerHTML = renderQuiz();
+  },
+  quizPick: el => {
+    const o = +el.dataset.o; QZ.picked = o; if (o === QUIZ[QZ.order[QZ.i]].a) QZ.score++;
+    $('#quiz').innerHTML = renderQuiz();
+  },
+  quizNext: () => {
+    QZ.i++; QZ.picked = null;
+    if (QZ.i >= QUIZ.length) { S.quizBest = Math.max(S.quizBest ?? 0, QZ.score); save(); }
+    $('#quiz').innerHTML = renderQuiz(); $('#quiz').scrollIntoView({ block: 'start', behavior: 'smooth' });
+  },
+  copyPrompt: el => {
+    const x = PROMPTS[+el.dataset.i]; const k = aiKonu.trim() || '[konu]';
+    copyText(x.p.replace(/\{konu\}/g, k).replace(/\{ders\}/g, aiDers));
+  },
+  exportData: () => exportData(),
+  wipe: async () => {
+    if (!confirm('Tüm konular, kartlar, hatalar ve alışkanlık geçmişi bu cihazdan kalıcı olarak silinecek. Emin misin?')) return;
+    S = DEFAULT(); try { await IDB.clear(); } catch (e) {}
+    T = { mode: 'work', round: 1, running: false, remaining: dur('work'), endAt: 0, msg: '', goal: '' };
+    HF = CS = MS = QZ = null; save(); go('bugun'); toast('Tüm veriler silindi.');
+  },
+};
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el || el.disabled) return;
+  const fn = A[el.dataset.act];
+  if (fn) fn(el, e);
+});
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.dataset.bind && HF) { HF[el.dataset.bind] = el.value; return; }
+  if (el.dataset.filter) {
+    const q = el.value.trim().toLocaleLowerCase('tr');
+    $$(el.dataset.filter).forEach(r => r.classList.toggle('hidden', q && !r.dataset.text.includes(q)));
+    return;
+  }
+  if (el.id === 'aiKonu') { aiKonu = el.value; $('#prompts').innerHTML = renderPrompts(); return; }
+});
+document.addEventListener('change', async e => {
+  const el = e.target;
+  if (el.dataset.bind && HF) { HF[el.dataset.bind] = el.value; return; }
+  if (el.id === 'aiDers') { aiDers = el.value; $('#prompts').innerHTML = renderPrompts(); return; }
+  if (el.dataset.set) {
+    const lim = { work: [5, 90], short: [1, 30], long: [5, 60] }[el.dataset.set];
+    const v = Math.min(lim[1], Math.max(lim[0], Math.round(+el.value) || lim[0]));
+    S.pomo[el.dataset.set] = v; el.value = v;
+    if (!T.running && T.mode === (el.dataset.set === 'work' ? 'work' : el.dataset.set)) T.remaining = dur(T.mode);
+    persistT(); render(); return;
+  }
+  if (el.dataset.change === 'mistImg' && el.files[0]) {
+    try {
+      pendingImg = await compressImage(el.files[0]);
+      const p = $('#mPrev'); p.src = URL.createObjectURL(pendingImg); p.classList.remove('hidden');
+    } catch (err) { toast('Fotoğraf açılamadı.'); }
+    return;
+  }
+  if (el.dataset.change === 'importData' && el.files[0]) { await importData(el.files[0]); el.value = ''; }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#modal').classList.contains('open')) closeModal(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { renderNav(); renderStreak(); if (current === 'bugun') render(); } });
+
+/* ---------- başlat ---------- */
+render();
+if (!S.seenIntro) {
+  S.seenIntro = true; save();
+  openModal(`<div class="center"><img src="icon.svg" alt="" style="width:64px;height:64px;border-radius:16px"><h2 style="margin-top:10px">Odak Koçu’na hoş geldin!</h2>
+    <p class="muted">Çok çalışmak değil, <b>doğru çalışmak</b>.</p></div>
+    <ul class="clean">
+      <li><b>🍅 Odak:</b> 25 dakika çalış, 5 dakika mola.</li>
+      <li><b>🧠 Hatırla:</b> Kitabı kapat, hatırladıklarını yaz. Uygulama tekrar günlerini hatırlar.</li>
+      <li><b>🃏 Kartlar:</b> Bildiğin kartlar seyrek, bilemediğin kartlar sık gelir.</li>
+      <li><b>📓 Hatalar:</b> Yanlış yaptığın soruların fotoğrafı ve nedeni.</li>
+      <li><b>📚 Rehber:</b> Bu yöntemler neden işe yarıyor, ve bir mini test.</li>
+    </ul>
+    <div class="note small">🌱 <b>İlk hafta sadece 2 şey:</b> telefonu başka odaya koy ve çalıştığın konuyu kitap kapalıyken hatırlamaya çalış. Gerisi zamanla açılacak.</div>
+    <button class="btn primary block lg mt" data-act="closeModal">Hadi başlayalım</button>`);
+}
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>

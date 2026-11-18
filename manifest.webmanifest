@@ -1,0 +1,14 @@
+{
+  "name": "Odak Koçu",
+  "short_name": "Odak Koçu",
+  "description": "Bilimsel çalışma yöntemlerini öğren ve uygula.",
+  "lang": "tr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f4ee",
+  "theme_color": "#0f766e",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
